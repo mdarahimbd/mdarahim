@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gesture Controlled 3D Particles + Music</title>
+    <style>
+        body { margin: 0; overflow: hidden; background: #000; color: white; font-family: sans-serif; }
+        #canvas-container { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; }
+        #video-container { 
+            position: absolute; bottom: 20px; right: 20px; 
+            width: 160px; height: 120px; z-index: 2; 
+            border: 2px solid rgba(255,255,255,0.3); border-radius: 8px; overflow: hidden;
+            transform: scaleX(-1); /* Mirror video */
+        }
+        video { width: 100%; height: 100%; object-fit: cover; }
+        #ui {
+            position: absolute; top: 20px; left: 20px; z-index: 3;
+            /* pointer-events: none; */
+            background: rgba(0,0,0,0.6); padding: 15px; border-radius: 8px;
+            min-width: 200px;
+        }
+        h1 { margin: 0 0 10px 0; font-size: 1.2rem; text-transform: uppercase; letter-spacing: 2px; }
+        p { margin: 5px 0; font-size: 0.9rem; color: #ccc; pointer-events: none; }
+        .highlight { color: #00ffcc; font-weight: bold; }
+
+        /* --- MUSIC STYLES (HIDDEN FROM UI) --- */
+        .music-controls {
+            display: none; 
+        }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/control_utils/control_utils.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js" crossorigin="anonymous"></script>
+</head>
+<body>
+
+    <div id="ui">
+        <h1>Particle Morph</h1>
+        <p>Current Shape: <span id="shape-name" class="highlight">Sphere</span></p>
+        <p>🖐 <b>Move Hand:</b> Rotate Scene</p>
+        <p>👌 <b>Pinch:</b> Expand/Explode</p>
+        <p>✌️ <b>Peace Sign:</b> Next Shape</p>
+        <p>✊ <b>Fist:</b> Change Color</p>
+
+        <!-- --- MUSIC CONTROLS (Hidden by CSS) --- -->
+        <div class="music-controls">
+            <input type="file" id="music-input" accept="audio/*">
+            <button id="play-pause-btn">Play</button>
+        </div>
+    </div>
+
+    <!-- AUDIO ELEMENT -->
+    <audio id="bg-audio" loop></audio>
+
+    <div id="video-container">
+        <video id="input_video"></video>
+    </div>
+    <div id="canvas-container"></div>
+
+    <script>
+        // --- MUSIC SYSTEM CONFIGURATION ---
+        // PASTE YOUR MUSIC LINK OR FILE PATH BELOW
+        const DEFAULT_MUSIC_URL = "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"; 
+
+        // --- CONFIGURATION ---
+        const PARTICLE_COUNT = 4000;
+        const PARTICLE_SIZE = 0.15;
+        const INTERACTION_SMOOTHING = 0.1;
+
+        // --- STATE ---
+        let currentShapeIndex = 0;
+        // ADDED 'Cat' and 'Man' to the list
+        const shapes = ['Sphere', 'Heart', 'Saturn', 'Flower', 'Cat', 'Man'];
+        let targetPositions = [];
+        let particlesGeo, particlesMat, particleSystem;
+        let scene, camera, renderer;
+        let time = 0;
+        
+        // Interaction State
+        let expansion = 0;
+        let rotationTarget = { x: 0, y: 0 };
+        let colorHue = 0.6; // Blue-ish start
+        let lastGesture = "";
+        let gestureCooldown = 0;
+
+        // --- THREE.JS SETUP ---
+        function initThree() {
+            scene = new THREE.Scene();
+            scene.fog = new THREE.FogExp2(0x000000, 0.03);
+
+            camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+            camera.position.z = 15;
+
+            renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+            document.getElementById('canvas-container').appendChild(renderer.domElement);
+
+            particlesGeo = new THREE.BufferGeometry();
+            const positions = new Float32Array(PARTICLE_COUNT * 3);
+            const colors = new Float32Array(PARTICLE_COUNT * 3);
+
+            for (let i = 0; i < PARTICLE_COUNT * 3; i++) {
+                positions[i] = (Math.random() - 0.5) * 20;
+                colors[i] = 1.0;
+            }
+
+            particlesGeo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+            particlesGeo.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+
+            const sprite = new THREE.TextureLoader().load('https://threejs.org/examples/textures/sprites/disc.png');
+            particlesMat = new THREE.PointsMaterial({
+                size: PARTICLE_SIZE,
+                map: sprite,
+                vertexColors: true,
+                transparent: true,
+                opacity: 0.8,
+                blending: THREE.AdditiveBlending,
+                depthWrite: false
+            });
+
+            particleSystem = new THREE.Points(particlesGeo, particlesMat);
+            scene.add(particleSystem);
+
+            generateShape('Sphere');
+
+            window.addEventListener('resize', onWindowResize, false);
+        }
+
+        function onWindowResize() {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        }
+
+        // --- SHAPE GENERATORS ---
+        function getPointOnSphere(r) {
+            const u = Math.random();
+            const v = Math.random();
+            const theta = 2 * Math.PI * u;
+            const phi = Math.acos(2 * v - 1);
+            return {
+                x: r * Math.sin(phi) * Math.cos(theta),
+                y: r * Math.sin(phi) * Math.sin(theta),
+                z: r * Math.cos(phi)
+            };
+        }
+
+        function generateShape(type) {
+            targetPositions = [];
+            
+            for (let i = 0; i < PARTICLE_COUNT; i++) {
+                let x, y, z;
+
+                if (type === 'Sphere') {
+                    const p = getPointOnSphere(6);
+                    x = p.x; y = p.y; z = p.z;
+                } 
+                else if (type === 'Heart') {
+                    const t = Math.random() * Math.PI * 2;
+                    const scale = 0.35;
+                    x = 16 * Math.pow(Math.sin(t), 3);
+                    y = 13 * Math.cos(t) - 5 * Math.cos(2*t) - 2 * Math.cos(3*t) - Math.cos(4*t);
+                    z = (Math.random()-0.5) * 4;
+                    x *= scale; y *= scale; z *= scale;
+                    y += 2; 
+                } 
+                else if (type === 'Saturn') {
+                    if (Math.random() > 0.3) {
+                        const p = getPointOnSphere(3.5);
+                        x = p.x; y = p.y; z = p.z;
+                    } else {
+                        const angle = Math.random() * Math.PI * 2;
+                        const dist = 5 + Math.random() * 4;
+                        x = Math.cos(angle) * dist;
+                        z = Math.sin(angle) * dist;
+                        y = (Math.random() - 0.5) * 0.5;
+                        const tilt = 0.4;
+                        let tempY = y * Math.cos(tilt) - z * Math.sin(tilt);
+                        let tempZ = y * Math.sin(tilt) + z * Math.cos(tilt);
+                        y = tempY; z = tempZ;
+                    }
+                } 
+                else if (type === 'Flower') {
+                    const u = Math.random() * Math.PI * 2;
+                    const v = Math.random() * Math.PI;
+                    const rad = 5 * Math.sin(3 * u) * Math.sin(v);
+                    x = rad * Math.sin(u) * Math.cos(v);
+                    y = rad * Math.sin(u) * Math.sin(v);
+                    z = rad * Math.cos(u);
+                }
+                // --- NEW SHAPE: CAT ---
+                else if (type === 'Cat') {
+                    const rand = Math.random();
+                    if (rand < 0.35) {
+                        // Head (Sphere)
+                        const p = getPointOnSphere(2.5);
+                        x = p.x; y = p.y + 2.5; z = p.z;
+                    } else if (rand < 0.75) {
+                        // Body (Ellipsoid/Coneish)
+                        const theta = Math.random() * Math.PI * 2;
+                        const h = Math.random() * 5; // Height
+                        const rad = 2.5 * (1 - h/7); // Taper slightly
+                        x = Math.cos(theta) * rad;
+                        z = Math.sin(theta) * rad;
+                        y = -h;
+                    } else if (rand < 0.85) {
+                        // Ears (Triangles on head)
+                        const side = (Math.random() > 0.5) ? 1 : -1; // Left or Right
+                        x = side * (1.0 + Math.random());
+                        y = 4.0 + Math.random() * 1.5;
+                        z = (Math.random() - 0.5);
+                    } else {
+                        // Tail (Sine wave)
+                        const t = Math.random() * 3;
+                        x = Math.sin(t * 2);
+                        y = -3 + Math.cos(t);
+                        z = -2.5 - t;
+                    }
+                }
+                // --- NEW SHAPE: MAN ---
+                else if (type === 'Man') {
+                    const rand = Math.random();
+                    if (rand < 0.15) {
+                        // Head
+                        const p = getPointOnSphere(1.2);
+                        x = p.x; y = p.y + 4; z = p.z;
+                    } else if (rand < 0.45) {
+                        // Torso (Box/Cylinder)
+                        x = (Math.random() - 0.5) * 2;
+                        y = Math.random() * 4; // 0 to 4
+                        z = (Math.random() - 0.5) * 1.5;
+                    } else if (rand < 0.7) {
+                        // Arms (Lines)
+                        const side = (Math.random() > 0.5) ? 1 : -1;
+                        const len = Math.random() * 3.5;
+                        x = side * (1.2 + len); 
+                        y = 3.5 - (len * 0.5); // Arms down slightly
+                        z = (Math.random() - 0.5);
+                    } else {
+                        // Legs
+                        const side = (Math.random() > 0.5) ? 1 : -1;
+                        x = side * (0.5 + Math.random() * 0.5);
+                        y = -Math.random() * 4.5;
+                        z = (Math.random() - 0.5);
+                    }
+                }
+
+                targetPositions.push(x, y, z);
+            }
+            
+            document.getElementById('shape-name').innerText = type;
+        }
+
+        // --- ANIMATION LOOP ---
+        function animate() {
+            requestAnimationFrame(animate);
+            time += 0.01;
+
+            const positions = particlesGeo.attributes.position.array;
+            const colors = particlesGeo.attributes.color.array;
+
+            for (let i = 0; i < PARTICLE_COUNT; i++) {
+                const ix = i * 3;
+                const iy = i * 3 + 1;
+                const iz = i * 3 + 2;
+
+                const noise = Math.sin(time + positions[iy]) * 0.02;
+                let exp = 1.0 + expansion * 3.0;
+
+                let tx = targetPositions[ix] * exp;
+                let ty = targetPositions[iy] * exp;
+                let tz = targetPositions[iz] * exp;
+
+                positions[ix] += (tx - positions[ix]) * 0.05 + noise;
+                positions[iy] += (ty - positions[iy]) * 0.05 + noise;
+                positions[iz] += (tz - positions[iz]) * 0.05 + noise;
+
+                const color = new THREE.Color();
+                color.setHSL((colorHue + (positions[iy] * 0.02)) % 1, 0.8, 0.6);
+                
+                colors[ix] = color.r;
+                colors[iy] = color.g;
+                colors[iz] = color.b;
+            }
+
+            particlesGeo.attributes.position.needsUpdate = true;
+            particlesGeo.attributes.color.needsUpdate = true;
+
+            particleSystem.rotation.x += (rotationTarget.y - particleSystem.rotation.x) * 0.05;
+            particleSystem.rotation.y += (rotationTarget.x - particleSystem.rotation.y) * 0.05;
+
+            if (expansion < 0.1) {
+               particleSystem.rotation.y += 0.002;
+            }
+
+            renderer.render(scene, camera);
+        }
+
+        // --- MEDIAPIPE LOGIC ---
+        const videoElement = document.getElementById('input_video');
+
+        function onResults(results) {
+            if (results.multiHandLandmarks && results.multiHandLandmarks.length > 0) {
+                const landmarks = results.multiHandLandmarks[0];
+
+                const x = (landmarks[0].x - 0.5) * 2;
+                const y = (landmarks[0].y - 0.5) * 2;
+                rotationTarget.x = -x * 2; 
+                rotationTarget.y = y * 2;
+
+                const thumbTip = landmarks[4];
+                const indexTip = landmarks[8];
+                const distance = Math.sqrt(
+                    Math.pow(thumbTip.x - indexTip.x, 2) + 
+                    Math.pow(thumbTip.y - indexTip.y, 2)
+                );
+
+                if (distance < 0.08) {
+                    expansion += (1 - expansion) * 0.1; 
+                } else {
+                    expansion += (0 - expansion) * 0.1; 
+                }
+
+                detectGesture(landmarks);
+            }
+        }
+
+        function detectGesture(lm) {
+            if (gestureCooldown > 0) {
+                gestureCooldown--;
+                return;
+            }
+
+            const isIndexUp = lm[8].y < lm[6].y;
+            const isMiddleUp = lm[12].y < lm[10].y;
+            const isRingUp = lm[16].y < lm[14].y;
+            const isPinkyUp = lm[20].y < lm[18].y;
+
+            // FIST
+            if (!isIndexUp && !isMiddleUp && !isRingUp && !isPinkyUp) {
+                colorHue = Math.random();
+                gestureCooldown = 20; 
+            }
+
+            // PEACE SIGN
+            if (isIndexUp && isMiddleUp && !isRingUp && !isPinkyUp) {
+                currentShapeIndex = (currentShapeIndex + 1) % shapes.length;
+                generateShape(shapes[currentShapeIndex]);
+                gestureCooldown = 40; 
+            }
+        }
+
+        const hands = new Hands({locateFile: (file) => {
+            return `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`;
+        }});
+
+        hands.setOptions({
+            maxNumHands: 1,
+            modelComplexity: 1, 
+            minDetectionConfidence: 0.5,
+            minTrackingConfidence: 0.5
+        });
+
+        hands.onResults(onResults);
+
+        const cameraUtils = new Camera(videoElement, {
+            onFrame: async () => {
+                await hands.send({image: videoElement});
+            },
+            width: 640,
+            height: 480
+        });
+
+        initThree();
+        cameraUtils.start();
+        
+        // --- MUSIC LOGIC ---
+        const audioElement = document.getElementById('bg-audio');
+
+        if (DEFAULT_MUSIC_URL) {
+            audioElement.src = DEFAULT_MUSIC_URL;
+        }
+
+        window.addEventListener('click', () => {
+            if (audioElement.paused && audioElement.src) {
+                audioElement.play().catch(e => console.log("Audio play blocked until interaction"));
+            }
+        }, { once: true });
+
+        animate();
+
+    </script>
+</body>
+</html>
