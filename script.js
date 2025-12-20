@@ -4,19 +4,19 @@ $(document).ready(function () {
     // Just change the strings here to add your files.
     // Ensure images are in assets/images/projects/
     const myProjects = [
-        { img: "project1.jpg", title: "Project1", desc: "RAHIM LOGO" },
-        { img: "project2.png", title: "Project 2", desc: "Design work" },
-        { img: "project3.jpg", title: "Project 3", desc: "Design Work" },
-        { img: "project4.jpg", title: "Project 4", desc: "Creative Art" },
-        { img: "project5.jpg", title: "Project 5", desc: "AR Logo Design" },
-        { img: "project6.jpg", title: "Project 6", desc: "AR Logo Design" },
-        { img: "project7.jpg", title: "Project 7", desc: "AR Logo Design" },
-        { img: "project8.jpg", title: "Project 8", desc: "AR Logo Design" },
-        { img: "project9.jpg", title: "Project 9", desc: "R Logo Design" },
-        { img: "project10.jpg", title: "Project 10", desc: "AR Logo Design" }
+        { img: "project1.jpg", title: "RAHIM LOGO", desc: "project 1" },
+        { img: "project2.png", title: "Design work", desc: "project 2" },
+        { img: "project3.jpg", title: "Design work", desc: "project 3" },
+        { img: "project4.jpg", title: "Creative art", desc: "project 4" },
+        { img: "project5.jpg", title: "AR Logo Design", desc: "project 5" },
+        { img: "project6.jpg", title: "AR Logo Design", desc: "project 6" },
+        { img: "project7.jpg", title: "AR Logo Design", desc: "project 7" },
+        { img: "project8.jpg", title: "AR Logo Design", desc: "project 8" },
+        { img: "project9.jpg", title: "R Logo Design", desc: "project 9" },
+        { img: "project10.jpg", title: "AR Logo Design", desc: "project 10" }
     ];
 
-    let projectHTML = "";
+   let projectHTML = "";
     myProjects.forEach(proj => {
         projectHTML += `
         <div class="box tilt">
@@ -24,7 +24,8 @@ $(document).ready(function () {
             <div class="content">
                 <h3>${proj.title}</h3>
                 <p>${proj.desc}</p>
-                <a href="#" class="btn">View</a>
+                <!-- FIXED: Now links directly to the image file -->
+                <a href="project/${proj.img}" target="_blank" class="btn">View</a>
             </div>
         </div>
         `;
