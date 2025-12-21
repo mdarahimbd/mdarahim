@@ -548,39 +548,111 @@ header .navbar ul li a:hover {
 }
 .skills .container .row {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); /* Auto-adjusts columns */
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
   flex-wrap: wrap;
   gap: 1.8rem;
 }
+
+/* --- SKILL BAR BOX --- */
 .skills .container .bar {
+  position: relative;
   margin-bottom: 15px;
-  padding: 10px;
+  padding: 20px 10px;
   border-radius: 1rem;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
   background: rgba(0, 0, 22, 0.9);
-  transition: 0.2s;
+  transition: 0.3s;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1;
 }
+
+/* Hover Effect: Circular Gradient Border */
+.skills .container .bar::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  z-index: -1;
+  border-radius: 1rem;
+  background: conic-gradient(var(--span-color) var(--per), transparent 0);
+  opacity: 0;
+  transition: 0.3s;
+}
+
+/* Inner masking to make it look like a border */
+.skills .container .bar::after {
+  content: '';
+  position: absolute;
+  top: 4px; left: 4px; right: 4px; bottom: 4px;
+  background: rgba(0, 0, 22, 0.95);
+  border-radius: 0.8rem;
+  z-index: -1;
+  opacity: 0;
+  transition: 0.3s;
+}
+
+/* Trigger animation on hover */
+.skills .container .bar:hover::before,
+.skills .container .bar:hover::after {
+  opacity: 1;
+}
+
 .skills .container .bar:hover {
-  box-shadow: 0 0 20px #00eaff !important; 
-  background-color: rgba(0, 0, 0, 0.9) !important;
+  transform: translateY(-5px);
+  box-shadow: 0 0 20px var(--span-color) !important;
 }
+
 .skills .container .bar .info {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 1rem;
-  margin-top: 1rem;
-}
-.skills .container .bar .info i {
-  font-size: 4rem;
-}
-.skills .container .bar .info span {
-  font-size: 1.5rem; /* Smaller text for mobile fit */
-  font-weight: 500;
-  font-family: "Poppins";
-  margin-left: 0.5rem;
+  position: relative;
+  z-index: 2;
 }
 
+.skills .container .bar .info i, 
+.skills .container .bar .info img {
+  font-size: 4rem;
+  transition: 0.3s;
+}
+
+.skills .container .bar .info span {
+  font-size: 1.5rem;
+  font-weight: 500;
+  font-family: "Poppins";
+  transition: 0.3s;
+  color: var(--text-white);
+}
+
+/* Percentage Text Styling (Hidden by default) */
+.skills .container .bar .info .perc {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: var(--span-color);
+  opacity: 0;
+  transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  text-shadow: 0 0 10px rgba(0,0,0,0.8);
+}
+
+/* Hover State: Hide Icon/Text, Show Percentage */
+.skills .container .bar:hover .info i,
+.skills .container .bar:hover .info img,
+.skills .container .bar:hover .info > span:not(.perc) {
+  opacity: 0;
+  transform: scale(0.5);
+}
+
+.skills .container .bar:hover .info .perc {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+}
 /* education section */
 .education {
   background: var(--section-education-bg);
