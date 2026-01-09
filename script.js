@@ -13,7 +13,9 @@ $(document).ready(function () {
         { img: "project7.jpg", title: "AR Logo Design", desc: "project 7" },
         { img: "project8.jpg", title: "AR Logo Design", desc: "project 8" },
         { img: "project9.jpg", title: "R Logo Design", desc: "project 9" },
-        { img: "project10.jpg", title: "AR Logo Design", desc: "project 10" }
+        { img: "project10.jpg", title: "AR Logo Design", desc: "project 10" },
+        { img: "project11.jpg", title: "Rahim Logo", desc: "project 11" }
+        
     ];
 
    let projectHTML = "";
