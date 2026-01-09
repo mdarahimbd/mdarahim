@@ -411,23 +411,55 @@ header .navbar ul li a:hover {
   color: #fff;
   background-color: #3006ee;
 }
-.social-icons a.github:hover {
-  background-color: #0fb0b6;
+/*github hover color */
+.social-icons a.github:hover,
+.footer .share a.github:hover {
+  background-color: #333 !important; /* Official GitHub Black */
+  color: #fff !important;
+  box-shadow: 0 0 10px #333;
 }
-.social-icons a.twitter:hover {
-  background-color: #00aced;
+/*twitter hover color */
+.social-icons a.twitter:hover,
+.footer .share a.twitter:hover {
+  background-color: #1da1f2 !important; /* Official Twitter Blue */
+  color: #fff !important;
+  box-shadow: 0 0 10px #1da1f2;
 }
-.social-icons a.linkedin:hover {
-  background-color: #0072b1;
+/*github hover color */
+.social-icons a.github:hover,
+.footer .share a.github:hover {
+  background-color: #0077b5 !important; /* Official GitHub Black */
+  color: #fff !important;
+  box-shadow: 0 0 10px #007;
 }
-.social-icons a.dev:hover {
-  background-color: #bb0000;
+/*linkedin hover color */
+.social-icons a.linkedin:hover,
+.footer .share a.linkedin:hover {
+  background-color: #0077b5 !important; /* Official LinkedIn Blue */
+  color: #fff !important;
+  box-shadow: 0 0 10px #0077b5;
 }
-.social-icons a.instagram:hover {
-  background: radial-gradient(circle at 30% 107%, #fdf497 0%, #fdf497 5%, #fd5949 45%, #d6249f 60%, #285AEB 90%);
+/* youtube color */
+.social-icons a.youtube:hover,
+.footer .share a.youtube:hover {
+  background-color: #bb0000 !important; /* Official YOUTUBE Red */
+  color: #fff !important;
+  box-shadow: 0 0 10px #bb0000;
 }
-.social-icons a.facebook:hover {
-  background: #0676df;
+/* instagram hover color */
+.social-icons a.instagram:hover,
+.footer .share a.instagram:hover {
+    background: radial-gradient(circle at 30% 107%, #fdf497 0%, #fdf497 5%, #fd5949 45%, #d6249f 60%, #285AEB 90%) !important; 
+    color: #fff !important;
+    box-shadow: 0 0 15px #d6249f; 
+    border: none;
+}
+/* facebook hover color */
+.social-icons a.facebook:hover,
+.footer .share a.facebook:hover {
+  background-color: #0676df !important; /* Official Facebook Blue */
+  color: #fff !important;
+  box-shadow: 0 0 10px #0676df;
 }
 /* Telegram Hover Color */
 .social-icons a.telegram:hover,
@@ -435,6 +467,20 @@ header .navbar ul li a:hover {
   background-color: #0088cc !important; /* Official Telegram Blue */
   color: #fff !important;
   box-shadow: 0 0 10px #0088cc;
+}
+/* Wahatsapp Hover Color */
+.social-icons a.whatsapp:hover,
+.footer .share a.whatsapp:hover {
+  background-color: #25d366 !important; /* Official WhatsApp Green */
+  color: #fff !important;
+  box-shadow: 0 0 10px #25d366;
+}
+/* Mail Icon Hover Color */
+.social-icons a.mail:hover,
+.footer .share a.mail:hover {
+  background-color: #ea4335 !important; /* Gmail Red */
+  color: #fff !important;
+  box-shadow: 0 0 10px #ea4335;
 }
 /* about section */
 .about {
@@ -895,6 +941,7 @@ header .navbar ul li a:hover {
     padding: 1.2rem;
   }
 }
+
 /* footer section ends */
 
 /* common media queries starts*/
