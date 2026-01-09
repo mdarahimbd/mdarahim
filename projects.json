@@ -89,4 +89,13 @@
       "code": "#"
     }
   }
+  {
+    "name": "Rahim Logo",
+    "image": "assets/images/projects/project11.png",
+    "desc": "A sophisticated logo with golden 'AR' text inside a sleek, blue, swirling emblem on a textured background.",
+    "links": {
+      "view": "#",
+      "code": "#"
+    }
+  }
 ]
