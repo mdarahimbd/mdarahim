@@ -1,4 +1,3 @@
-// CONFIGURATION: 10 Images
 const slides = [
     { title: "MATTERHORN", desc: "The jewel of the Swiss Alps.", image: "assets/swiss/swiss1.jpg" },
     { title: "LUCERNE", desc: "Medieval architecture.", image: "assets/swiss/swiss2.jpg" },
@@ -12,7 +11,6 @@ const slides = [
     { title: "LUGANO", desc: "Italian flair.", image: "assets/swiss/swiss10.jpg" }
 ];
 
-// Elements
 const bgImage = document.getElementById('bg-image');
 const title = document.getElementById('slide-title');
 const desc = document.getElementById('slide-desc');
@@ -23,104 +21,75 @@ const counterNum = document.getElementById('current-slide-num');
 let currentIndex = 0;
 let autoPlayTimer;
 
-// INITIALIZE
+// Init
 updateContent(0);
 startAutoPlay();
 
-// BUTTON EVENTS
+// Events
 document.getElementById('next-btn').addEventListener('click', () => {
     resetAutoPlay();
-    let nextIndex = (currentIndex + 1) % slides.length;
-    changeSlide(nextIndex);
+    changeSlide((currentIndex + 1) % slides.length);
 });
 
 document.getElementById('prev-btn').addEventListener('click', () => {
     resetAutoPlay();
-    let prevIndex = (currentIndex - 1 + slides.length) % slides.length;
-    changeSlide(prevIndex);
+    changeSlide((currentIndex - 1 + slides.length) % slides.length);
 });
 
-// ANIMATION LOGIC
 function changeSlide(index) {
     if (index === currentIndex) return;
 
-    // GSAP Timeline for Cinematic Transition
     const tl = gsap.timeline();
-
-    // 1. Fade Text OUT
-    tl.to([title, desc], { y: -30, opacity: 0, duration: 0.4, ease: "power2.in" })
-      
-      // 2. SWAP IMAGE & UPDATE CONTENT
+    
+    // Animate text Out
+    tl.to([title, desc], { y: -30, opacity: 0, duration: 0.3 })
       .call(() => {
           currentIndex = index;
           updateContent(index);
-          
-          // Reset background zoom so we can animate it
-          gsap.set(bgImage, { scale: 1.2 }); 
+          gsap.set(bgImage, { scale: 1.15 }); // Reset zoom
       })
-
-      // 3. Zoom Background IN & Fade Text IN
-      .to(bgImage, { scale: 1, duration: 1.5, ease: "power2.out" }) // Cinematic Zoom effect
-      .to([title, desc], { y: 0, opacity: 1, duration: 0.5, ease: "power2.out" }, "-=1.0"); // Start text anim before zoom finishes
+      // Animate In
+      .to(bgImage, { scale: 1, duration: 1.5 })
+      .to([title, desc], { y: 0, opacity: 1, duration: 0.5 }, "-=1.0");
 }
 
-// UPDATE CONTENT & PREVIEW CARDS
 function updateContent(index) {
-    // Update Background
     bgImage.style.backgroundImage = `url('${slides[index].image}')`;
-    
-    // Update Text
     title.innerText = slides[index].title;
     desc.innerText = slides[index].desc;
-
-    // Update Number (01, 02, etc.)
+    
+    // Update Number
     let num = index + 1;
     counterNum.innerText = num < 10 ? `0${num}` : num;
-
-    // Update Progress Bar
-    // We animate the width so it looks smooth
+    
+    // Update Progress
     gsap.to(progressBar, { width: `${(num / slides.length) * 100}%`, duration: 0.5 });
 
-    // UPDATE PREVIEW CARDS (The Next 3)
+    // Update Cards (Only visible on PC via CSS, but logic remains)
     previewList.innerHTML = "";
-    
-    for (let i = 1; i <= 3; i++) {
-        // Wrap around logic
-        let nextSlideIndex = (index + i) % slides.length;
-        let slideData = slides[nextSlideIndex];
-        
-        let card = document.createElement('div');
-        card.classList.add('mini-card');
-        
-        // Allow clicking preview to jump there
-        card.onclick = () => {
-            resetAutoPlay();
-            changeSlide(nextSlideIndex);
-        };
-        
-        card.innerHTML = `
-            <img src="${slideData.image}" loading="lazy">
-            <div class="card-info">
-                <h4>${slideData.title}</h4>
-            </div>
-        `;
-        
-        // Small entry animation for cards
-        gsap.fromTo(card, { opacity: 0, x: 20 }, { opacity: 1, x: 0, duration: 0.4, delay: i * 0.1 });
-        
-        previewList.appendChild(card);
+    if(window.innerWidth > 768) { // Performance: Only render cards if screen is big
+        for (let i = 1; i <= 3; i++) {
+            let nextIndex = (index + i) % slides.length;
+            let card = document.createElement('div');
+            card.classList.add('mini-card');
+            card.onclick = () => { resetAutoPlay(); changeSlide(nextIndex); };
+            card.innerHTML = `<img src="${slides[nextIndex].image}"><div class="card-info"><h4>${slides[nextIndex].title}</h4></div>`;
+            gsap.fromTo(card, { opacity: 0, x: 20 }, { opacity: 1, x: 0, duration: 0.4, delay: i * 0.1 });
+            previewList.appendChild(card);
+        }
     }
 }
 
-// AUTO PLAY LOGIC
 function startAutoPlay() {
     autoPlayTimer = setInterval(() => {
-        let nextIndex = (currentIndex + 1) % slides.length;
-        changeSlide(nextIndex);
-    }, 3000); // Changes every 3 seconds
+        changeSlide((currentIndex + 1) % slides.length);
+    }, 5000);
 }
 
 function resetAutoPlay() {
     clearInterval(autoPlayTimer);
-    startAutoPlay(); // Restart timer
+    startAutoPlay();
 }
+
+// Re-render cards if resizing window from Mobile to Desktop
+window.addEventListener('resize', () => updateContent(currentIndex));
