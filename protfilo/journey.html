@@ -2,31 +2,28 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title> Swiss Journey</title>
+    <!-- THIS LINE IS CRITICAL FOR MOBILE -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Swiss Journey</title>
     <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;700&family=Inter:wght@300;400&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="assets/css/journey.css">
+    <link id='profile' rel="shortcut icon" href="11.jpg" type="image/x-png">
 </head>
 <body>
 
-    <!-- BACKGROUND LAYER -->
     <div class="bg-layer" id="bg-image"></div>
     <div class="overlay"></div>
 
-    <!-- MAIN TEXT (Left Side) -->
     <div class="content-container">
         <p class="subtitle">DISCOVER SWITZERLAND</p>
         <h1 class="main-title" id="slide-title">MATTERHORN</h1>
         <p class="description" id="slide-desc">Experience the breathtaking alpine views.</p>
-        
+        <button class="explore-btn">Discover Location</button>
     </div>
 
-    <!-- PREVIEW CARDS (Right Side) -->
-    <div class="cards-preview" id="preview-list">
-        <!-- JS will inject images here -->
-    </div>
+    <!-- Preview cards (Will hide on mobile automatically) -->
+    <div class="cards-preview" id="preview-list"></div>
 
-    <!-- CONTROLS (Bottom Right) -->
     <div class="bottom-controls">
         <div class="nav-buttons">
             <button class="nav-btn" id="prev-btn">
