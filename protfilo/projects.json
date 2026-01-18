@@ -1,0 +1,101 @@
+[
+  {
+    "name": " Logo",
+    "image": "project1.png",
+    "desc": "A creative logo design featuring the initials 'AR' with a modern, sliced effect against a brick wall.",
+    "links": { 
+      "view": "#",
+      "code": "#"
+    }
+  },
+  {
+    "name": "Golden AR Crest",
+    "image": "assets/images/projects/project2.png",
+    "desc": "A regal and luxurious logo design with golden 'AR' text, a crown, and a laurel wreath.",
+    "links": {
+      "view": "#",
+      "code": "#"
+    }
+  },
+  {
+    "name": "3D Text Reflection",
+    "image": "assets/images/projects/project3.png",
+    "desc": "An elegant 3D text effect for the name 'RAHIM' with a realistic reflection on a clean surface.",
+    "links": {
+      "view": "#",
+      "code": "#"
+    }
+  },
+  {
+    "name": "Evening Silhouette Art",
+    "image": "assets/images/projects/project4.png",
+    "desc": "A beautiful and atmospheric silhouette artwork depicting a person with a bicycle at dusk.",
+    "links": {
+      "view": "#",
+      "code": "#"
+    }
+  },
+  {
+    "name": "Water Splash Title",
+    "image": "assets/images/projects/project5.png",
+    "desc": "A dynamic and energetic title design with 3D text integrated into a vibrant water splash scene.",
+    "links": {
+      "view": "#",
+      "code": "#"
+    }
+  },
+  {
+    "name": "Creative Bengali Calligraphy",
+    "image": "assets/images/projects/project6.png",
+    "desc": "A stylish and artistic 3D calligraphy of the name 'Abdur Rahim' in Bengali, with floral and heart elements.",
+    "links": {
+      "view": "#",
+      "code": "#"
+    }
+  },
+  {
+    "name": "Modern AR Circle Logo",
+    "image": "assets/images/projects/project7.png",
+    "desc": "A clean and modern circular logo with gradient colors for the initials 'AR'.",
+    "links": {
+      "view": "#",
+      "code": "#"
+    }
+  },
+  {
+    "name": "Futuristic AR Emblem",
+    "image": "assets/images/projects/project8.png",
+    "desc": "A futuristic emblem design featuring 'AR' with glowing, segmented circles on a dark background.",
+    "links": {
+      "view": "#",
+      "code": "#"
+    }
+  },
+  {
+    "name": "3D 'R' Logo",
+    "image": "assets/images/projects/project9.png",
+    "desc": "A sharp and bold 3D logo design for the letter 'R' with a reflective surface.",
+    "links": {
+      "view": "#",
+      "code": "#"
+    }
+  },
+  {
+    "name": "Elegant AR Emblem",
+    "image": "assets/images/projects/project10.png",
+    "desc": "A sophisticated logo with golden 'AR' text inside a sleek, blue, swirling emblem on a textured background.",
+    "links": {
+      "view": "#",
+      "code": "#"
+    }
+  }
+  {
+    "name": "Rahim Logo",
+    "image": "assets/images/projects/project11.png",
+    "desc": "A sophisticated logo with golden 'AR' text inside a sleek, blue, swirling emblem on a textured background.",
+    "links": {
+      "view": "#",
+      "code": "#"
+    }
+  }
+]
