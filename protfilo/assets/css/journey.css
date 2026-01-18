@@ -1,45 +1,45 @@
-/* --- GLOBAL RESET --- */
+/* --- GLOBAL SETTINGS --- */
 body {
-    margin: 0; padding: 0; overflow: hidden; background: #000; font-family: 'Inter', sans-serif;
+    margin: 0; padding: 0; 
+    overflow: hidden; 
+    background: #000; /* Black background is important for mobile "bars" */
+    font-family: 'Inter', sans-serif;
 }
 
-/* --- BACKGROUND (Auto-Adjustable) --- */
+/* --- BACKGROUND (PC DEFAULT) --- */
 .bg-layer {
     position: absolute; inset: 0;
-    /* 'cover' makes it fill the screen on BOTH PC and Mobile */
+    /* PC: Cover the whole screen (Immersive) */
     background-size: cover; 
-    /* 'center' ensures the middle of the photo is always visible */
-    background-position: center center;
+    background-position: center;
     background-repeat: no-repeat;
     transition: transform 1s ease;
     z-index: -2;
-    image-rendering: -webkit-optimize-contrast; /* Sharpen on Safari */
+    image-rendering: -webkit-optimize-contrast;
 }
 
 .overlay {
     position: absolute; inset: 0;
-    /* Gradient adapted for readability */
-    background: linear-gradient(to right, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.3) 50%, rgba(0,0,0,0.1) 100%);
+    /* Gradient for text readability */
+    background: linear-gradient(to right, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0) 60%);
     z-index: -1;
 }
 
-/* --- DESKTOP LAYOUT (Default) --- */
+/* --- TEXT CONTENT --- */
 .content-container {
     position: absolute; top: 50%; left: 80px; transform: translateY(-50%);
     color: white; max-width: 500px; z-index: 10;
 }
-
 .subtitle { color: #ffd700; letter-spacing: 2px; font-size: 14px; margin-bottom: 10px; font-weight: 600; }
 .main-title { font-family: 'Oswald', sans-serif; font-size: 5rem; margin: 0; line-height: 1; text-transform: uppercase; }
-.description { font-size: 1.1rem; color: #eee; margin-top: 20px; line-height: 1.6; text-shadow: 0 2px 4px rgba(0,0,0,0.5); }
-
+.description { font-size: 1.1rem; color: #eee; margin-top: 20px; line-height: 1.6; }
 .explore-btn {
     margin-top: 30px; padding: 12px 30px; background: transparent; color: white;
     border: 1px solid white; border-radius: 30px; cursor: pointer; transition: 0.3s;
 }
 .explore-btn:hover { background: white; color: black; }
 
-/* Preview Cards (Right Side) */
+/* --- RIGHT SIDE PREVIEW CARDS --- */
 .cards-preview {
     position: absolute; bottom: 120px; right: 50px;
     display: flex; gap: 20px; z-index: 10;
@@ -57,7 +57,7 @@ body {
 }
 .mini-card h4 { margin: 0; font-size: 12px; font-family: 'Oswald', sans-serif; text-transform: uppercase; }
 
-/* Bottom Controls */
+/* --- BOTTOM CONTROLS --- */
 .bottom-controls {
     position: absolute; bottom: 40px; right: 50px;
     display: flex; align-items: center; gap: 40px; z-index: 20;
@@ -74,49 +74,55 @@ body {
 .slide-number { font-family: 'Oswald', sans-serif; font-size: 1.5rem; color: white; }
 
 /* ========================================= */
-/* === MOBILE & TABLET AUTO-ADJUSTMENTS === */
+/* === MOBILE ADJUSTMENTS (The Fix) === */
 /* ========================================= */
 
-@media (max-width: 1024px) {
-    /* Tablet/Laptop Tweaks */
-    .main-title { font-size: 4rem; }
-    .cards-preview { bottom: 100px; right: 30px; }
-    .mini-card { width: 100px; height: 150px; }
-}
-
 @media (max-width: 768px) {
-    /* --- MOBILE PHONES --- */
     
-    /* 1. Darker Overlay on Mobile so text is readable over any image part */
-    .overlay {
-        background: linear-gradient(to bottom, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.8) 100%);
+    /* 1. IMAGE: SHOW REAL SIZE (Contain) */
+    .bg-layer {
+        /* This ensures the WHOLE image fits on the screen without cropping */
+        background-size: contain; 
+        
+        /* Centers the image in the middle of the black screen */
+        background-position: center; 
     }
 
-    /* 2. Center the Text and Move it Down */
+    /* 2. OVERLAY: Adjust gradient */
+    .overlay {
+        /* Make bottom darker so text pops against the black background */
+        background: linear-gradient(to bottom, rgba(0,0,0,0) 50%, rgba(0,0,0,1) 90%);
+    }
+
+    /* 3. TEXT: Move to Bottom (Below the image area usually) */
     .content-container {
-        left: 20px; right: 20px; /* Full width minus padding */
-        top: auto; bottom: 180px; /* Position from bottom */
+        left: 0; right: 0; /* Full width */
+        top: auto; 
+        bottom: 140px; /* Sits near bottom */
         transform: none;
-        text-align: center; /* Center align looks best on phone */
+        text-align: center;
+        padding: 0 20px;
         max-width: 100%;
     }
+    
+    .main-title { font-size: 3rem; }
+    .subtitle { margin-bottom: 5px; }
+    .description { font-size: 0.9rem; margin-top: 10px; color: #ccc; }
+    .explore-btn { margin-top: 20px; padding: 10px 25px; font-size: 0.9rem; }
 
-    .main-title { font-size: 3.5rem; } /* Smaller font for phone */
-    .description { font-size: 1rem; max-width: 100%; }
-
-    /* 3. HIDE Preview Cards on Mobile (Too much clutter) */
+    /* 4. HIDE Extra Cards */
     .cards-preview { display: none; }
 
-    /* 4. Center the Controls at the bottom */
+    /* 5. CONTROLS: Center at bottom */
     .bottom-controls {
-        right: auto;
-        left: 50%;
-        transform: translateX(-50%); /* Centers it perfectly */
-        bottom: 40px;
-        width: 90%;
-        justify-content: space-between; /* Space out arrows and numbers */
+        right: auto; left: 50%; transform: translateX(-50%);
+        bottom: 30px;
+        width: 100%;
+        justify-content: center;
+        gap: 20px;
     }
     
-    .nav-buttons { gap: 20px; }
-    .nav-btn { width: 55px; height: 55px; } /* Bigger buttons for fingers */
+    /* Make controls smaller to fit */
+    .progress-track { width: 80px; }
+    .nav-btn { width: 40px; height: 40px; }
 }
