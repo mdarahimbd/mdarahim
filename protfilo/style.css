@@ -1119,3 +1119,31 @@ header .navbar ul li a:hover {
     grid-template-columns: 1fr;
   }
 }
+/* Memory Button Style - Cyan/Blue Futuristic Theme */
+.memory-btn {
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 28px;
+    background: rgba(0, 255, 255, 0.05); /* Cyan tint */
+    border: 1px solid rgba(0, 255, 255, 0.3);
+    border-radius: 50px;
+    color: #00ffff; /* Cyan Text */
+    font-size: 1rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    box-shadow: 0 0 10px rgba(0, 255, 255, 0.1);
+}
+
+.memory-btn:hover {
+    background: #00ffff;
+    color: #04f3a3;
+    box-shadow: 0 0 20px rgba(0, 255, 255, 0.6); /* Strong Glow */
+    transform: translateY(-3px);
+}
+
+.memory-btn:hover .btn-icon {
+    transform: rotate(20deg) scale(1.2);
+}
