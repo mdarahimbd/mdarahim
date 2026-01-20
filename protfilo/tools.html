@@ -3,20 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title> Auto CV Generator </title>
+    <title> CV Generator </title>
     
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&family=Inter:wght@300;400;600;800&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
-    <link id='profile' rel="shortcut icon" href="11.jpg" type="image/x-png">
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&family=Inter:wght@300;400;600;700;800&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    
     <!-- Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     
-    <!-- HTML2PDF -->
+    <!-- HTML2PDF Bundle -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
     <script>
@@ -26,23 +26,12 @@
                     fontFamily: {
                         sans: ['Roboto', 'Inter', 'sans-serif'],
                         siliguri: ['Hind Siliguri', 'sans-serif'],
+                        serif: ['Georgia', 'serif'],
                     },
                     colors: {
                         neonBlue: '#00f3ff',
                         neonPurple: '#bc13fe',
-                        darkBg: '#2c3e50',
-                    },
-                    animation: {
-                        blob: "blob 7s infinite",
-                    },
-                    keyframes: {
-                        blob: {
-                            "0%": { transform: "translate(0px, 0px) scale(1)" },
-                            "33%": { transform: "translate(30px, -50px) scale(1.1)" },
-                            "66%": { transform: "translate(-20px, 20px) scale(0.9)" },
-                            "100%": { transform: "translate(0px, 0px) scale(1)" },
-                        },
-                    },
+                    }
                 }
             }
         }
@@ -57,6 +46,7 @@
                 radial-gradient(at 100% 0%, hsla(339,49%,30%,1) 0, transparent 50%);
             color: #e2e8f0;
             overflow-x: hidden;
+            -webkit-tap-highlight-color: transparent;
         }
 
         .glass-panel {
@@ -77,13 +67,15 @@
             transform: translateY(-2px);
         }
 
+        /* Preview Container Styling */
         #cv-preview-container {
-            width: 210mm;
-            min-height: 297mm;
+            width: 210mm; 
+            min-height: 297mm; 
             background: white;
             margin: 0 auto;
             box-shadow: 0 0 15px rgba(0,0,0,0.5);
-            transform-origin: top left;
+            /* Important: Block display to allow float to work */
+            display: block; 
         }
 
         .floating-input:focus ~ label,
@@ -105,7 +97,26 @@
         .highlight { color: #00f3ff; font-weight: bold; }
 
         @media (max-width: 1024px) {
-            #cv-preview-wrapper { overflow-x: scroll; }
+            #cv-preview-wrapper { 
+                overflow-x: scroll; 
+                padding: 1rem;
+            }
+            #cv-preview-container {
+                transform-origin: top left;
+                transform: scale(0.6); 
+                margin-bottom: -110mm; 
+            }
+        }
+        
+        input, textarea {
+            font-size: 16px !important;
+        }
+
+        /* Table Styles for Bio-Data */
+        .bio-table td {
+            vertical-align: top;
+            padding-bottom: 2px;
+            color: #000;
         }
     </style>
 </head>
@@ -113,28 +124,18 @@
 
     <!-- LANDING VIEW -->
     <section id="landing-view" class="flex-grow flex flex-col items-center justify-center p-6 relative z-10 h-screen">
-        <!-- Background Animation -->
-        <div class="absolute top-0 left-0 w-full h-full overflow-hidden -z-10 pointer-events-none">
-            <div class="absolute top-1/4 left-1/4 w-96 h-96 bg-neonPurple rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob"></div>
-            <div class="absolute top-1/3 right-1/4 w-96 h-96 bg-neonBlue rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob"></div>
-        </div>
-
-        <h1 class="text-5xl md:text-7xl font-bold text-center mb-4 text-transparent bg-clip-text bg-gradient-to-r from-neonBlue to-neonPurple">
-              CV Generator made by Abdur Rahim 
+        <h1 class="text-4xl md:text-7xl font-bold text-center mb-4 text-transparent bg-clip-text bg-gradient-to-r from-neonBlue to-neonPurple">
+            CV Generator Made by A.Rahim
         </h1>
         <p class="text-gray-400 text-lg mb-12 text-center max-w-xl">
             Select a mode below to create your  resume.
         </p>
         
-        <!-- BUTTONS CONTAINER -->
-        <div class="flex flex-col md:flex-row gap-6">
-            <!-- Professional Mode (Original) -->
-            <button onclick="showLanguageModal('professional')" class="glow-btn glass-panel px-10 py-6 rounded-2xl border border-neonBlue/30 text-neonBlue font-bold text-xl hover:bg-neonBlue/10">
-                <i class="fa-solid fa-wand-magic-sparkles mr-3"></i> Professional Mode
+        <div class="flex flex-col md:flex-row gap-6 w-full max-w-md md:max-w-none px-4">
+            <button onclick="showLanguageModal('professional')" class="glow-btn glass-panel w-full md:w-auto px-10 py-6 rounded-2xl border border-neonBlue/30 text-neonBlue font-bold text-xl hover:bg-neonBlue/10 mb-4 md:mb-0">
+                <i class="fa-solid fa-wand-magic-sparkles mr-3"></i> Professional
             </button>
-            
-            <!-- Normal Mode (New) -->
-            <button onclick="showLanguageModal('normal')" class="glow-btn glass-panel px-10 py-6 rounded-2xl border border-white/20 text-white font-bold text-xl hover:bg-white/10">
+            <button onclick="showLanguageModal('normal')" class="glow-btn glass-panel w-full md:w-auto px-10 py-6 rounded-2xl border border-white/20 text-white font-bold text-xl hover:bg-white/10">
                 <i class="fa-solid fa-rocket mr-3"></i> Normal Mode
             </button>
         </div>
@@ -142,7 +143,7 @@
 
     <!-- LANGUAGE MODAL -->
     <div id="lang-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm hidden">
-        <div class="glass-panel p-8 rounded-2xl max-w-md w-full text-center border border-white/10">
+        <div class="glass-panel p-8 rounded-2xl max-w-md w-full text-center border border-white/10 m-4">
             <h2 class="text-2xl font-bold mb-6 text-white">Select CV Language</h2>
             <div class="grid grid-cols-2 gap-4">
                 <button onclick="selectLang('bn')" class="p-4 rounded-xl border border-white/20 hover:bg-white/10 text-white font-bold text-lg">বাংলা</button>
@@ -155,28 +156,30 @@
     <div id="app-view" class="hidden min-h-screen flex flex-col lg:flex-row">
         
         <!-- LEFT: Form -->
-        <div class="w-full lg:w-5/12 p-6 overflow-y-auto h-screen border-r border-white/10 bg-slate-900/90">
+        <div class="w-full lg:w-5/12 p-6 overflow-y-auto lg:h-screen border-b lg:border-r border-white/10 bg-slate-900/95 order-2 lg:order-1 relative z-20">
             <div class="flex justify-between items-center mb-6">
                 <button onclick="location.reload()" class="text-sm text-gray-400 hover:text-white"><i class="fa-solid fa-arrow-left"></i> Back</button>
                 <h2 class="text-xl font-bold text-neonBlue">Resume Details</h2>
             </div>
 
-            <form id="cv-form" class="space-y-6">
-                <!-- Fields injected via JS -->
+            <form id="cv-form" class="space-y-6 pb-24">
+                <!-- Form generated by JS -->
             </form>
 
-            <div class="mt-8 pt-6 border-t border-white/10 pb-10">
-                <button type="button" onclick="generatePreview()" class="w-full py-4 bg-gradient-to-r from-neonBlue to-blue-600 rounded-xl font-bold text-black text-lg mb-4 hover:shadow-[0_0_20px_rgba(0,243,255,0.4)] transition">
-                    Update Live Preview
-                </button>
-                <button type="button" onclick="downloadPDF()" class="w-full py-4 glass-panel border border-neonPurple text-neonPurple rounded-xl font-bold text-lg hover:bg-neonPurple hover:text-white transition">
-                    <i class="fa-solid fa-file-pdf mr-2"></i> Download PDF (A4)
-                </button>
+            <div class="fixed bottom-0 left-0 w-full lg:absolute lg:bottom-0 p-4 bg-slate-900 border-t border-white/10 lg:static z-50">
+                <div class="flex gap-2">
+                    <button type="button" onclick="generatePreview()" class="flex-1 py-3 bg-gradient-to-r from-neonBlue to-blue-600 rounded-xl font-bold text-black text-sm md:text-lg shadow-lg">
+                        Preview
+                    </button>
+                    <button type="button" onclick="downloadPDF()" class="flex-1 py-3 bg-neonPurple text-white rounded-xl font-bold text-sm md:text-lg shadow-lg">
+                        <i class="fa-solid fa-file-pdf"></i> Download PDF
+                    </button>
+                </div>
             </div>
         </div>
 
         <!-- RIGHT: Preview -->
-        <div id="cv-preview-wrapper" class="w-full lg:w-7/12 bg-gray-800 p-8 flex justify-center overflow-y-auto h-screen">
+        <div id="cv-preview-wrapper" class="w-full lg:w-7/12 bg-gray-800 p-4 md:p-8 flex justify-center lg:overflow-y-auto lg:h-screen order-1 lg:order-2">
             <div id="cv-preview-container"></div>
         </div>
     </div>
@@ -186,41 +189,56 @@
             lang: null, 
             image: null, 
             primaryColor: '#2c3e50', 
-            mode: 'professional' // Default
+            mode: 'professional'
         };
 
         const i18n = {
             en: {
-                name: "Full Name", email: "Email", phone: "Phone", address: "Address",
-                jobTitle: "Professional Job Title", objective: "Career Objective",
-                education: "Education Details", experience: "Work Experience", activities: "Activities / Projects",
-                skills: "Skills (comma separated)", languages: "Languages",
-                certificates: "Certifications (Format: Year : Description)",
-                interests: "Interests", dob: "Date of Birth",
-                imgLabel: "Upload Photo", colorLabel: "Sidebar Theme Color",
-                h_contact: "Contact", h_skills: "Skills", h_edu: "Education",
-                h_exp: "Experience", h_act: "Activities", h_cert: "Honors & Awards", h_int: "Interests",
-                eduHelper: "Format: <b>School</b> , <b>Degree</b> , <b>Date</b> , <b>GPA/Desc</b>",
-                expHelper: "Format: <b>Company</b> , <b>Role</b> , <b>Date</b> , <b>Description</b>",
-                actHelper: "Format: <b>Event</b> , <b>Role</b> , <b>Date</b> , <b>Description</b>"
+                name: "Full Name", email: "Email", phone: "Phone", address: "Present Address",
+                jobTitle: "Job Title", objective: "OBJECTIVE", description: "Industrial Training",
+                education: "EDUCATION", experience: "WORK EXPERIENCE", activities: "Activities",
+                skills: "SKILLS", languages: "LANGUAGES",
+                certificates: "HONORS & AWARDS",
+                interests: "INTERESTS", dob: "Date of Birth",
+                imgLabel: "Upload Photo", colorLabel: "Theme Color",
+                
+                father: "Father's Name", mother: "Mother's Name", permAddr: "Permanent Address",
+                marital: "Marital Status", nid: "NID", religion: "Religion", nationality: "Nationality",
+                sex: "Sex", blood: "Blood Group", height: "Height",
+
+                h_contact: "CONTACT", h_skills: "SKILLS", h_edu: "EDUCATION",
+                h_exp: "WORK EXPERIENCE", h_act: "ACTIVITIES", h_cert: "HONORS & AWARDS", h_int: "INTERESTS",
+                h_p_details: "PERSONAL DETAILS", h_decl: "DECLARATION", h_sig: "Signature",
+
+                eduHelper: "Format: <b>Degree</b> , <b>Institute</b> , <b>Year</b> , <b>Group</b> , <b>Board</b> , <b>GPA</b>",
+                expHelper: "Format: <b>Company</b> , <b>Designation</b> , <b>Duration</b> , <b>Location</b>",
             },
             bn: {
-                name: "পূর্ণ নাম", email: "ইমেইল", phone: "মোবাইল", address: "ঠিকানা",
-                jobTitle: "পেশা / পদবী", objective: "ক্যারিয়ার অবজেক্টিভ",
+                name: "পূর্ণ নাম", email: "ইমেইল", phone: "মোবাইল", address: "বর্তমান ঠিকানা",
+                jobTitle: "পেশা / পদবী", objective: "ক্যারিয়ার অবজেক্টিভ", description: "ইন্ডাস্ট্রিয়াল ট্রেনিং",
                 education: "শিক্ষা", experience: "কাজের অভিজ্ঞতা", activities: "কার্যক্রম",
-                skills: "দক্ষতা (কমা দিয়ে লিখুন)", languages: "ভাষাসমূহ",
+                skills: "দক্ষতা", languages: "ভাষাসমূহ",
                 certificates: "সার্টিফিকেট", interests: "আগ্রহ", dob: "জন্ম তারিখ",
-                imgLabel: "ছবি আপলোড করুন", colorLabel: "সাইডবারের রঙ",
+                imgLabel: "ছবি আপলোড করুন", colorLabel: "থিম কালার",
+                
+                father: "পিতার নাম", mother: "মাতার নাম", permAddr: "স্থায়ী ঠিকানা",
+                marital: "বৈবাহিক অবস্থা", nid: "জাতীয় পরিচয়পত্র", religion: "ধর্ম", nationality: "জাতীয়তা",
+                sex: "লিঙ্গ", blood: "রক্তের গ্রুপ", height: "উচ্চতা",
+
                 h_contact: "যোগাযোগ", h_skills: "দক্ষতা", h_edu: "শিক্ষা",
                 h_exp: "অভিজ্ঞতা", h_act: "কার্যক্রম", h_cert: "সম্মাননা", h_int: "আগ্রহ",
-                eduHelper: "লিখুন: <b>প্রতিষ্ঠান</b> , <b>বিষয়</b> , <b>তারিখ</b> , <b>বিবরণ</b>",
-                expHelper: "লিখুন: <b>কোম্পানি</b> , <b>পদবী</b> , <b>তারিখ</b> , <b>বিবরণ</b>",
-                actHelper: "লিখুন: <b>ইভেন্ট</b> , <b>ভূমিকা</b> , <b>তারিখ</b> , <b>বিবরণ</b>"
+                h_p_details: "ব্যক্তিগত তথ্য", h_decl: "ঘোষণা", h_sig: "স্বাক্ষর",
+
+                eduHelper: "লিখুন: <b>ডিগ্রি</b> , <b>প্রতিষ্ঠান</b> , <b>সাল</b> , <b>গ্রুপ</b> , <b>বোর্ড</b> , <b>ফলাফল</b>",
+                expHelper: "লিখুন: <b>কোম্পানি</b> , <b>পদবী</b> , <b>সময়কাল</b> , <b>স্থান</b>",
             }
         };
 
         function showLanguageModal(mode) {
-            state.mode = mode; 
+            state.mode = mode;
+            if(mode === 'professional') state.primaryColor = '#2d8f85'; 
+            else state.primaryColor = '#103138'; 
+            
             document.getElementById('landing-view').classList.add('hidden');
             document.getElementById('lang-modal').classList.remove('hidden');
         }
@@ -242,22 +260,17 @@
             const createInput = (id, label, type = 'text', isArea = false, helperText = null) => {
                 const wrapper = document.createElement('div');
                 wrapper.className = 'relative pt-4';
-                
                 let input = isArea ? document.createElement('textarea') : document.createElement('input');
                 if (isArea) input.rows = 4; else input.type = type;
-                
                 input.id = id;
                 input.className = 'floating-input block w-full appearance-none bg-transparent border-b-2 border-gray-600 px-0 py-2 text-white focus:outline-none focus:border-neonBlue transition-colors peer placeholder-transparent';
                 input.placeholder = label;
                 input.addEventListener('input', generatePreview);
-
                 const lbl = document.createElement('label');
                 lbl.innerText = label;
                 lbl.className = 'absolute left-0 top-4 text-gray-400 text-sm transition-all duration-300 transform -translate-y-0 scale-100 origin-[0] peer-focus:-translate-y-7 peer-focus:text-neonBlue peer-focus:scale-85 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-not-placeholder-shown:-translate-y-7 peer-not-placeholder-shown:scale-85 pointer-events-none';
-
                 wrapper.appendChild(input);
                 wrapper.appendChild(lbl);
-                
                 if(helperText) {
                     const helpDiv = document.createElement('div');
                     helpDiv.className = 'format-helper';
@@ -267,13 +280,35 @@
                 return wrapper;
             };
 
-            // Essential Fields
             formContainer.appendChild(createInput('inp-name', t.name));
             formContainer.appendChild(createInput('inp-job', t.jobTitle));
             
-            // Theme Customization
+            const pdLabel = document.createElement('h3');
+            pdLabel.className = "text-neonBlue text-sm font-bold uppercase mt-4 border-b border-gray-700 pb-1";
+            pdLabel.innerText = "Personal Details (For Page 2)";
+            formContainer.appendChild(pdLabel);
+
+            formContainer.appendChild(createInput('inp-father', t.father));
+            formContainer.appendChild(createInput('inp-mother', t.mother));
+            formContainer.appendChild(createInput('inp-dob', t.dob, 'text', false, "Ex: 31-12-2000"));
+            formContainer.appendChild(createInput('inp-perm-addr', t.permAddr));
+            formContainer.appendChild(createInput('inp-marital', t.marital));
+            formContainer.appendChild(createInput('inp-nationality', t.nationality));
+            formContainer.appendChild(createInput('inp-nid', t.nid));
+            formContainer.appendChild(createInput('inp-religion', t.religion));
+            
+            const rowDiv = document.createElement('div');
+            rowDiv.className = "grid grid-cols-2 gap-4";
+            const divSex = createInput('inp-sex', t.sex);
+            const divBlood = createInput('inp-blood', t.blood);
+            rowDiv.appendChild(divSex);
+            rowDiv.appendChild(divBlood);
+            formContainer.appendChild(rowDiv);
+            
+            formContainer.appendChild(createInput('inp-height', t.height));
+
             const colorWrapper = document.createElement('div');
-            colorWrapper.className = 'flex items-center gap-4 mt-4';
+            colorWrapper.className = 'flex items-center gap-4 mt-6';
             const colorInp = document.createElement('input');
             colorInp.type = 'color';
             colorInp.id = 'inp-color';
@@ -287,7 +322,6 @@
             colorWrapper.appendChild(colorLbl);
             formContainer.appendChild(colorWrapper);
 
-            // Image Upload
             const imgWrapper = document.createElement('div');
             imgWrapper.className = 'mt-4 border border-dashed border-gray-500 rounded-lg p-4 text-center hover:border-neonBlue transition';
             const imgInp = document.createElement('input');
@@ -304,24 +338,19 @@
             imgWrapper.appendChild(imgBtn);
             formContainer.appendChild(imgWrapper);
 
-            // Section Fields
             formContainer.appendChild(createInput('inp-obj', t.objective, 'text', true));
             formContainer.appendChild(createInput('inp-edu', t.education, 'text', true, t.eduHelper));
             formContainer.appendChild(createInput('inp-exp', t.experience, 'text', true, t.expHelper));
-            
-            // Activities section only for professional mode usually, but can be added to normal if needed. Keeping simple.
-            if(state.mode === 'professional') {
-                formContainer.appendChild(createInput('inp-act', t.activities, 'text', true, t.actHelper));
-            }
-
+            formContainer.appendChild(createInput('inp-desc', t.description, 'text', true));
             formContainer.appendChild(createInput('inp-phone', t.phone, 'tel'));
             formContainer.appendChild(createInput('inp-email', t.email, 'email'));
             formContainer.appendChild(createInput('inp-loc', t.address));
-            formContainer.appendChild(createInput('inp-dob', t.dob, 'date'));
             formContainer.appendChild(createInput('inp-skills', t.skills, 'text', true));
             formContainer.appendChild(createInput('inp-lang', t.languages));
             formContainer.appendChild(createInput('inp-cert', t.certificates, 'text', true));
-            formContainer.appendChild(createInput('inp-int', t.interests, 'text', true));
+            if(state.mode !== 'professional') {
+                formContainer.appendChild(createInput('inp-int', t.interests, 'text', true));
+            }
         }
 
         function handleImageUpload(e) {
@@ -333,19 +362,19 @@
             }
         }
 
-        // --- Helpers ---
         const parseList = (str) => {
             if(!str) return '';
-            return `<ul class="list-none space-y-2 mt-2">${str.split(',').filter(i => i.trim() !== '').map(i => `<li class="flex items-start"><span class="mr-2">•</span> ${i.trim()}</li>`).join('')}</ul>`;
+            return `<ul class="list-none space-y-1 mt-1 text-xs text-white/90 font-light">${str.split(',').filter(i => i.trim() !== '').map(i => `<li class="flex items-start"><span class="mr-2">•</span> ${i.trim()}</li>`).join('')}</ul>`;
+        };
+
+        const parseTags = (str) => {
+            if(!str) return '';
+            return `<div class="flex flex-wrap gap-2 mt-2">${str.split(',').filter(i => i.trim() !== '').map(i => `<span class="bg-white/20 px-2 py-1 rounded text-xs text-white font-medium">${i.trim()}</span>`).join('')}</div>`;
         };
 
         const parseCerts = (str) => {
             if(!str) return '';
-            return str.split('\n').filter(l => l.trim() !== '').map(line => {
-                const parts = line.split(':');
-                if(parts.length > 1) return `<div class="mb-3"><span class="font-bold block">${parts[0].trim()}:</span> <span class="text-gray-200 text-sm opacity-90">${parts.slice(1).join(':').trim()}</span></div>`;
-                return `<div class="mb-3 text-sm">${line}</div>`;
-            }).join('');
+            return str.split('\n').filter(l => l.trim() !== '').map(line => `<div class="mb-2 text-xs text-white/90 font-light">${line}</div>`).join('');
         };
 
         const safeText = (text) => {
@@ -353,54 +382,85 @@
             return text.split('\n').map(line => `<div class="mb-1">${line}</div>`).join('');
         };
 
-        // PARSER FOR PROFESSIONAL MODE (Timeline Style)
-        const parseRightColItems = (str) => {
+        // --- NORMAL MODE PARSERS ---
+        const parseExperienceNormal = (str) => {
             if(!str) return '';
             return str.split('\n').filter(l => l.trim() !== '').map(line => {
                 const parts = line.split(',');
-                const title = parts[0] ? parts[0].trim() : '';
-                const subtitle = parts[1] ? parts[1].trim() : '';
-                const date = parts[2] ? parts[2].trim() : '';
-                const desc = parts.slice(3).join(',').trim();
-
-                return `
-                <div class="mb-5 relative pl-5">
-                    <div class="absolute left-0 top-2 w-1.5 h-1.5 bg-slate-800 rounded-full"></div> 
-                    <div class="font-bold text-slate-800 text-base leading-tight">${title}</div> 
-                    <div class="flex justify-between items-start mt-0.5">
-                        <div class="text-gray-500 text-sm font-medium">${subtitle}</div> 
-                        <div class="text-slate-800 text-sm font-bold whitespace-nowrap ml-4">${date}</div> 
-                    </div>
-                    ${desc ? `<div class="text-sm text-slate-600 mt-1 font-normal">- ${desc}</div>` : ''}
-                </div>`;
+                if(parts.length < 2) return `<div class="mb-2">${line}</div>`;
+                const company = parts[0]?.trim() || '';
+                const desig = parts[1]?.trim() || '';
+                const duration = parts[2]?.trim() || '';
+                const loc = parts[3]?.trim() || '';
+                return `<div class="mb-5 text-sm flex items-start"><span class="mr-2 mt-1 text-xs text-black">■</span><table class="w-full bio-table text-black"><tr><td class="w-40 font-medium text-slate-900">Name of Company</td><td class="px-2">:</td><td>${company}</td></tr><tr><td class="w-40 font-medium text-slate-900">Designation</td><td class="px-2">:</td><td>${desig}</td></tr><tr><td class="w-40 font-medium text-slate-900">Duration</td><td class="px-2">:</td><td>${duration}</td></tr>${loc ? `<tr><td class="w-40 font-medium text-slate-900">Location</td><td class="px-2">:</td><td>${loc}</td></tr>` : ''}</table></div>`;
             }).join('');
         };
 
-        // PARSER FOR NORMAL MODE (Clean Structured Style)
-        const parseNormalItems = (str) => {
+        const parseEducationNormal = (str) => {
             if(!str) return '';
             return str.split('\n').filter(l => l.trim() !== '').map(line => {
                 const parts = line.split(',');
-                
-                // Fallback if not using commas
                 if(parts.length < 2) return `<div class="mb-4 text-sm">${line}</div>`;
-
-                const col1 = parts[0] ? parts[0].trim() : ''; // Company / School
-                const col2 = parts[1] ? parts[1].trim() : ''; // Role / Degree
-                const col3 = parts[2] ? parts[2].trim() : ''; // Date
-                const col4 = parts.slice(3).join(',').trim(); // Description
-
-                return `
-                <div class="mb-6 relative">
-                    <div class="flex justify-between items-end mb-1">
-                        <h4 class="font-bold text-lg text-slate-800 leading-none">${col1}</h4>
-                        <span class="text-sm font-bold text-slate-500 bg-slate-100 px-2 py-0.5 rounded">${col3}</span>
-                    </div>
-                    <div class="text-sm font-semibold text-slate-600 italic mb-2">${col2}</div>
-                    ${col4 ? `<div class="text-sm text-slate-700 leading-relaxed border-l-2 border-slate-200 pl-3">${col4}</div>` : ''}
-                </div>`;
+                const degree = parts[0]?.trim() || '';
+                const institute = parts[1]?.trim() || '';
+                const year = parts[2]?.trim() || '';
+                const group = parts[3]?.trim() || '';
+                const board = parts[4]?.trim() || '';
+                const result = parts[5]?.trim() || '';
+                let stacked = '';
+                if(group) stacked += `<div class="text-sm text-gray-700 leading-tight">- Group: ${group}</div>`;
+                if(board) stacked += `<div class="text-sm text-gray-700 leading-tight">- Board: ${board}</div>`;
+                if(result) stacked += `<div class="text-sm text-gray-700 leading-tight">- Result: ${result}</div>`;
+                return `<div class="mb-6 flex items-start"><span class="mr-3 mt-1.5 text-xs text-black">●</span><div class="w-full"><div class="font-bold text-slate-900 text-base leading-tight">${degree}</div><div class="flex justify-between items-baseline mt-1 mb-1"><div class="text-sm text-gray-600 font-medium">Institute: ${institute}</div><div class="text-sm font-bold text-slate-900 text-right">Year: ${year}</div></div>${stacked}</div></div>`;
             }).join('');
         };
+
+        const renderPersonalDetailsTable = (val, t) => {
+            const fields = [
+                { k: t.name, v: val('inp-name') },
+                { k: t.father, v: val('inp-father') },
+                { k: t.mother, v: val('inp-mother') },
+                { k: t.dob, v: val('inp-dob') },
+                { k: t.permAddr, v: val('inp-perm-addr') },
+                { k: t.marital, v: val('inp-marital') },
+                { k: t.nid, v: val('inp-nid') },
+                { k: t.religion, v: val('inp-religion') },
+                { k: "Nationality", v: val('inp-nationality') || "Bangladeshi (By birth)" },
+                { k: t.sex, v: val('inp-sex') },
+                { k: t.blood, v: val('inp-blood') },
+                { k: t.height, v: val('inp-height') },
+            ];
+            const activeFields = fields.filter(f => f.v && f.v.trim() !== '');
+            if(activeFields.length === 0) return '';
+            return `<div class="mb-6">${getGradientHeader(t.h_p_details)}<table class="w-full text-sm text-black bio-table mt-4">${activeFields.map(f => `<tr><td class="py-1 font-medium w-48 align-top text-slate-900">${f.k}</td><td class="py-1 px-2 align-top">:</td><td class="py-1 align-top font-medium text-black">${f.v}</td></tr>`).join('')}</table></div>`;
+        };
+
+        const getLineHeader = (text) => `<div class="flex items-center mb-4 mt-2"><h3 class="text-lg font-bold uppercase text-slate-900 tracking-widest mr-4" style="font-family: 'Roboto', sans-serif;">${text}</h3><div class="flex-grow border-t border-gray-300 mt-1"></div></div>`;
+
+        const getGradientHeader = (text) => `<div style="background: linear-gradient(to right, ${state.primaryColor} 0%, #a0a0a0 60%, #ffffff 100%); border: 1px solid #000; padding: 2px 8px; margin-bottom: 12px; margin-top: 24px;"><h3 class="font-bold text-white uppercase tracking-wider text-base font-serif" style="text-shadow: 1px 1px 0 #000;">${text}</h3></div>`;
+
+        // PROFESSIONAL MODE PARSERS
+        const parseTimelineItems = (str) => {
+            if(!str) return '';
+            return str.split('\n').filter(l => l.trim() !== '').map(line => {
+                const parts = line.split(',');
+                if(parts.length < 2) return `<div class="mb-3 text-sm text-gray-600">${line}</div>`;
+                return `<div class="mb-5"><div class="font-bold text-slate-800 text-sm uppercase">${parts[0].trim()}</div><div class="text-xs text-slate-500 mb-1">${parts[2]?.trim()}</div><div class="text-sm font-semibold text-slate-700">${parts[1]?.trim()}</div>${parts[3] ? `<div class="text-sm text-slate-600 mt-1">${parts[3].trim()}</div>` : ''}</div>`;
+            }).join('');
+        };
+        
+        const parseEducationProf = (str) => {
+             if(!str) return '';
+            return str.split('\n').filter(l => l.trim() !== '').map(line => {
+                const parts = line.split(',');
+                if(parts.length < 3) return `<div class="mb-3 text-sm text-gray-600">${line}</div>`;
+                const details = [];
+                if(parts[3]) details.push(`Group: ${parts[3]}`);
+                if(parts[4]) details.push(`Board: ${parts[4]}`);
+                if(parts[5]) details.push(`Result: ${parts[5]}`);
+                return `<div class="mb-5"><div class="font-bold text-slate-800 text-sm uppercase">${parts[0].trim()}</div><div class="text-xs text-slate-500 mb-1">${parts[2].trim()}</div><div class="text-sm font-semibold text-slate-700">${parts[1].trim()}</div>${details.length > 0 ? `<div class="text-xs text-slate-600 mt-1 italic">${details.join(' | ')}</div>` : ''}</div>`;
+            }).join('');
+        }
 
         function generatePreview() {
             const container = document.getElementById('cv-preview-container');
@@ -408,139 +468,216 @@
             const val = (id) => document.getElementById(id) ? document.getElementById(id).value : '';
             const themeColor = state.primaryColor;
 
-            container.style.display = 'grid';
-            container.style.gridTemplateColumns = '32% 68%'; 
+            // Common Setup for Float Layout
+            container.style.transform = 'none';
+            container.style.display = 'block'; // ALWAYS Block for Float
             container.style.height = '100%'; 
 
-            if (state.mode === 'professional') {
-                // ================= PROFESSIONAL TEMPLATE =================
-                container.innerHTML = `
-                <!-- SIDEBAR -->
-                <div style="background-color: ${themeColor};" class="p-6 text-white flex flex-col h-full min-h-[297mm] text-sm leading-relaxed">
-                    <div class="flex justify-center mb-8 pt-4">
-                        <div class="w-36 h-36 rounded-full border-4 border-white/20 overflow-hidden bg-gray-300 flex items-center justify-center shadow-lg">
-                            ${state.image ? `<img src="${state.image}" class="w-full h-full object-cover">` : '<i class="fa-solid fa-user text-5xl text-gray-500"></i>'}
-                        </div>
-                    </div>
-                    <div class="mb-8">
-                        <h3 class="text-base font-bold uppercase tracking-wider mb-2 border-b border-white/30 pb-1">${t.h_contact}</h3>
-                        <div class="space-y-3 font-light text-sm opacity-90">
-                            ${val('inp-phone') ? `<p><i class="fa-solid fa-phone w-5 text-center mr-1"></i> ${val('inp-phone')}</p>` : ''}
-                            ${val('inp-email') ? `<p><i class="fa-solid fa-envelope w-5 text-center mr-1"></i> ${val('inp-email')}</p>` : ''}
-                            ${val('inp-loc') ? `<p><i class="fa-solid fa-location-dot w-5 text-center mr-1"></i> ${val('inp-loc')}</p>` : ''}
-                            ${val('inp-dob') ? `<p><i class="fa-solid fa-calendar w-5 text-center mr-1"></i> ${val('inp-dob')}</p>` : ''}
-                        </div>
-                    </div>
-                    ${val('inp-skills') ? `<div class="mb-8"><h3 class="text-base font-bold uppercase tracking-wider mb-2 border-b border-white/30 pb-1">${t.h_skills}</h3><div class="text-sm font-light opacity-90">${parseList(val('inp-skills'))}</div></div>` : ''}
-                    ${val('inp-lang') ? `<div class="mb-8"><h3 class="text-base font-bold uppercase tracking-wider mb-2 border-b border-white/30 pb-1">${t.languages}</h3><div class="text-sm font-light opacity-90">${parseList(val('inp-lang'))}</div></div>` : ''}
-                    ${val('inp-cert') ? `<div class="mb-8"><h3 class="text-base font-bold uppercase tracking-wider mb-2 border-b border-white/30 pb-1">${t.h_cert}</h3><div class="font-light opacity-90">${parseCerts(val('inp-cert'))}</div></div>` : ''}
-                    ${val('inp-int') ? `<div class="mb-8"><h3 class="text-base font-bold uppercase tracking-wider mb-2 border-b border-white/30 pb-1">${t.h_int}</h3><p class="text-sm font-light opacity-90">${val('inp-int')}</p></div>` : ''}
-                </div>
+            // ================== LAYOUT STRATEGY ==================
+            // We use a FLOAT layout for BOTH modes.
+            // 1. Sidebar is a floating div with a FIXED height of ~296mm (A4 height minus padding).
+            // 2. Main Content flows to the right.
+            // 3. When Sidebar height is exceeded (Page 1 ends), content naturally wraps to the left (full width).
 
-                <!-- MAIN CONTENT -->
-                <div class="bg-gray-50 p-8 text-slate-800">
-                    <div class="mb-10">
-                        <h1 class="text-4xl font-bold uppercase tracking-widest mb-2" style="color: ${themeColor}">${val('inp-name') || t.name}</h1>
-                        <h2 class="text-xl text-slate-500 font-medium tracking-wide uppercase">${val('inp-job') || t.jobTitle}</h2>
+            if (state.mode === 'professional') {
+                container.innerHTML = `
+                <div class="clearfix" style="width: 100%;">
+                    <!-- SIDEBAR (FLOAT) -->
+                    <div style="float: left; width: 35%; height: 296mm; background-color: ${themeColor}; padding: 1.5rem; color: white;">
+                        <div class="flex justify-center mb-8 pt-6">
+                            <div class="w-32 h-32 rounded-full border-4 border-white/40 overflow-hidden bg-gray-300 flex items-center justify-center">
+                                ${state.image ? `<img src="${state.image}" class="w-full h-full object-cover">` : '<i class="fa-solid fa-user text-5xl text-gray-500"></i>'}
+                            </div>
+                        </div>
+                        <div class="mb-8">
+                            <h3 class="text-sm font-bold uppercase tracking-wider mb-2 border-b border-white/40 pb-1">${t.h_contact}</h3>
+                            <div class="space-y-3 mt-3 text-xs font-medium">
+                                ${val('inp-phone') ? `<p class="flex items-center gap-3"><i class="fa-solid fa-phone"></i> ${val('inp-phone')}</p>` : ''}
+                                ${val('inp-email') ? `<p class="flex items-center gap-3"><i class="fa-solid fa-envelope"></i> ${val('inp-email')}</p>` : ''}
+                                ${val('inp-loc') ? `<p class="flex items-center gap-3"><i class="fa-solid fa-location-dot"></i> ${val('inp-loc')}</p>` : ''}
+                            </div>
+                        </div>
+                        ${val('inp-skills') ? `<div class="mb-8"><h3 class="text-sm font-bold uppercase tracking-wider mb-2 border-b border-white/40 pb-1">${t.h_skills}</h3>${parseTags(val('inp-skills'))}</div>` : ''}
+                        ${val('inp-lang') ? `<div class="mb-8"><h3 class="text-sm font-bold uppercase tracking-wider mb-2 border-b border-white/40 pb-1">${t.languages}</h3><div class="text-xs font-medium opacity-90">${parseList(val('inp-lang'))}</div></div>` : ''}
                     </div>
-                    ${val('inp-obj') ? `<div class="mb-8"><div class="flex items-center gap-3 mb-4"><span class="w-8 h-8 rounded-full flex items-center justify-center text-white text-sm" style="background-color: ${themeColor}"><i class="fa-solid fa-bullseye"></i></span><h3 class="text-xl font-bold uppercase text-slate-700">Profile</h3></div><p class="text-sm text-slate-600 leading-relaxed text-justify border-l-2 border-gray-200 pl-4">${val('inp-obj')}</p></div>` : ''}
-                    
-                    ${val('inp-edu') ? `<div class="mb-8"><div class="flex items-center gap-3 mb-6"><span class="w-8 h-8 rounded-full flex items-center justify-center text-white text-sm" style="background-color: ${themeColor}"><i class="fa-solid fa-graduation-cap"></i></span><h3 class="text-xl font-bold uppercase text-slate-700">${t.h_edu}</h3></div><div class="pl-2">${parseRightColItems(val('inp-edu'))}</div></div>` : ''}
-                    ${val('inp-exp') ? `<div class="mb-8"><div class="flex items-center gap-3 mb-6"><span class="w-8 h-8 rounded-full flex items-center justify-center text-white text-sm" style="background-color: ${themeColor}"><i class="fa-solid fa-briefcase"></i></span><h3 class="text-xl font-bold uppercase text-slate-700">${t.h_exp}</h3></div><div class="pl-2">${parseRightColItems(val('inp-exp'))}</div></div>` : ''}
-                    ${val('inp-act') ? `<div class="mb-8"><div class="flex items-center gap-3 mb-6"><span class="w-8 h-8 rounded-full flex items-center justify-center text-white text-sm" style="background-color: ${themeColor}"><i class="fa-solid fa-users"></i></span><h3 class="text-xl font-bold uppercase text-slate-700">${t.h_act}</h3></div><div class="pl-2">${parseRightColItems(val('inp-act'))}</div></div>` : ''}
+
+                    <!-- CONTENT (FLOW) -->
+                    <div style="width: 100%; box-sizing: border-box; padding: 2.5rem;">
+                        <!-- Header -->
+                        <div style="margin-left: 37%; margin-bottom: 2rem;">
+                            <h1 class="text-4xl font-extrabold uppercase mb-1 tracking-wide" style="color: ${themeColor}">${val('inp-name') || t.name}</h1>
+                            <h2 class="text-lg text-slate-400 font-medium tracking-wide">${val('inp-job') || t.jobTitle}</h2>
+                        </div>
+
+                        ${val('inp-obj') ? `<div style="margin-left: 37%; margin-bottom: 1.5rem;">
+                            <div class="flex items-center gap-3 mb-3"><span class="flex items-center justify-center w-6 h-6 rounded-full text-white text-xs" style="background-color: ${themeColor}"><i class="fa-solid fa-circle-user"></i></span><h3 class="text-lg font-bold uppercase text-slate-700">Profile</h3></div><p class="text-xs text-gray-600 leading-relaxed text-justify ml-9">${safeText(val('inp-obj'))}</p>
+                        </div>` : ''}
+
+                        ${val('inp-edu') ? `<div style="margin-left: 37%; margin-bottom: 1.5rem;">
+                            <div class="flex items-center gap-3 mb-4"><span class="flex items-center justify-center w-6 h-6 rounded-full text-white text-xs" style="background-color: ${themeColor}"><i class="fa-solid fa-graduation-cap"></i></span><h3 class="text-lg font-bold uppercase text-slate-700">${t.h_edu}</h3></div><div class="ml-9">${parseEducationProf(val('inp-edu'))}</div>
+                        </div>` : ''}
+
+                        ${val('inp-exp') ? `<div style="margin-left: 37%; margin-bottom: 1.5rem;">
+                            <div class="flex items-center gap-3 mb-4"><span class="flex items-center justify-center w-6 h-6 rounded-full text-white text-xs" style="background-color: ${themeColor}"><i class="fa-solid fa-briefcase"></i></span><h3 class="text-lg font-bold uppercase text-slate-700">${t.h_exp}</h3></div><div class="ml-9">${parseTimelineItems(val('inp-exp'))}</div>
+                        </div>` : ''}
+
+                        <!-- WRAPPING CONTENT (Training, Personal Details, Sig) -->
+                        
+                        ${val('inp-desc') ? `<div style="clear: both; margin-top: 2rem; margin-bottom: 1.5rem;">
+                             <div class="flex items-center gap-3 mb-3"><span class="flex items-center justify-center w-6 h-6 rounded-full text-white text-xs" style="background-color: ${themeColor}"><i class="fa-solid fa-file-contract"></i></span><h3 class="text-lg font-bold uppercase text-slate-700">Industrial Training</h3></div><p class="text-xs text-gray-600 leading-relaxed text-justify ml-9">${safeText(val('inp-desc'))}</p>
+                        </div>` : ''}
+
+                        <div style="clear: both; margin-bottom: 1.5rem;">
+                            <div class="flex items-center gap-3 mb-3"><span class="flex items-center justify-center w-6 h-6 rounded-full text-white text-xs" style="background-color: ${themeColor}"><i class="fa-solid fa-user-lines"></i></span><h3 class="text-lg font-bold uppercase text-slate-700">${t.h_p_details}</h3></div>
+                            <div class="ml-9 text-xs text-slate-600 space-y-1">
+                                ${val('inp-father') ? `<div>${t.father}: ${val('inp-father')}</div>` : ''}
+                                ${val('inp-mother') ? `<div>${t.mother}: ${val('inp-mother')}</div>` : ''}
+                                ${val('inp-dob') ? `<div>${t.dob}: ${val('inp-dob')}</div>` : ''}
+                                ${val('inp-perm-addr') ? `<div>${t.permAddr}: ${val('inp-perm-addr')}</div>` : ''}
+                                ${val('inp-nationality') ? `<div>Nationality: ${val('inp-nationality')}</div>` : ''}
+                                ${val('inp-nid') ? `<div>NID: ${val('inp-nid')}</div>` : ''}
+                            </div>
+                        </div>
+
+                        <div style="clear: both; margin-top: 3rem; margin-left: 2.25rem;">
+                            <div class="w-48 border-t border-slate-800 pt-2"><p class="text-xs font-bold text-slate-800 uppercase">${t.h_sig}</p></div>
+                        </div>
+                    </div>
                 </div>`;
             } else {
-                // ================= NORMAL (FUTURISTIC/CLEAN) TEMPLATE =================
+                // ================== NORMAL MODE (FLOAT LAYOUT) ==================
                 container.innerHTML = `
-                <div style="background-color: ${themeColor};" class="p-8 text-white flex flex-col h-full min-h-[297mm] text-sm leading-relaxed">
-                    <div class="flex justify-center mb-8">
-                        <div class="w-36 h-36 rounded-full border-4 border-white/20 overflow-hidden bg-gray-300 flex items-center justify-center shadow-lg">
-                            ${state.image ? `<img src="${state.image}" class="w-full h-full object-cover">` : '<i class="fa-solid fa-user text-5xl text-gray-500"></i>'}
+                <div class="clearfix" style="width: 100%;">
+                    
+                    <!-- SIDEBAR (FLOAT) -->
+                    <div style="float: left; width: 32%; height: 296mm; background-color: ${themeColor}; padding: 1.5rem; color: white;">
+                        <div class="flex justify-center mb-10 pt-4">
+                            <div class="w-32 h-32 rounded-full border-4 border-white/30 overflow-hidden bg-gray-300 flex items-center justify-center">
+                                ${state.image ? `<img src="${state.image}" class="w-full h-full object-cover">` : '<i class="fa-solid fa-user text-5xl text-gray-500"></i>'}
+                            </div>
+                        </div>
+                        <div class="mb-8">
+                            <h3 class="text-xs font-bold uppercase tracking-wider mb-3 pb-1 border-b border-white/30">${t.h_contact}</h3>
+                            <div class="space-y-2 text-xs font-light opacity-90">
+                                ${val('inp-phone') ? `<p class="flex items-center gap-2"><i class="fa-solid fa-phone"></i> ${val('inp-phone')}</p>` : ''}
+                                ${val('inp-email') ? `<p class="flex items-center gap-2"><i class="fa-solid fa-envelope"></i> ${val('inp-email')}</p>` : ''}
+                                ${val('inp-loc') ? `<p class="flex items-center gap-2"><i class="fa-solid fa-location-dot"></i> ${val('inp-loc')}</p>` : ''}
+                            </div>
+                        </div>
+                        ${val('inp-skills') ? `<div class="mb-8"><h3 class="text-xs font-bold uppercase tracking-wider mb-3 pb-1 border-b border-white/30">${t.h_skills}</h3><div class="text-xs font-light opacity-90">${parseList(val('inp-skills'))}</div></div>` : ''}
+                        ${val('inp-lang') ? `<div class="mb-8"><h3 class="text-xs font-bold uppercase tracking-wider mb-3 pb-1 border-b border-white/30">${t.languages}</h3><div class="text-xs font-light opacity-90">${parseList(val('inp-lang'))}</div></div>` : ''}
+                        ${val('inp-cert') ? `<div class="mb-8"><h3 class="text-xs font-bold uppercase tracking-wider mb-3 pb-1 border-b border-white/30">${t.h_cert}</h3><div class="text-xs font-light opacity-90 leading-relaxed">${parseCerts(val('inp-cert'))}</div></div>` : ''}
+                        ${val('inp-int') ? `<div class="mb-8"><h3 class="text-xs font-bold uppercase tracking-wider mb-3 pb-1 border-b border-white/30">${t.h_int}</h3><p class="text-xs font-light opacity-90 leading-relaxed">${val('inp-int')}</p></div>` : ''}
+                    </div>
+                    
+                    <!-- CONTENT (FLOW) -->
+                    <div style="width: 100%; box-sizing: border-box; padding: 2rem;">
+                        <!-- Header -->
+                         <div style="margin-left: 34%; margin-bottom: 2rem;">
+                            <h1 class="text-3xl font-bold uppercase text-slate-900 mb-1" style="color: ${themeColor}">${val('inp-name') || t.name}</h1>
+                            <h2 class="text-sm font-semibold text-slate-600 uppercase tracking-widest">${val('inp-job') || t.jobTitle}</h2>
+                        </div>
+
+                        ${val('inp-obj') ? `<div style="margin-left: 34%; margin-bottom: 1.5rem;">
+                            ${getLineHeader('OBJECTIVE')}
+                            <p class="text-sm text-black leading-relaxed text-justify font-normal">${safeText(val('inp-obj'))}</p>
+                        </div>` : ''}
+
+                        ${val('inp-edu') ? `<div style="margin-left: 34%; margin-bottom: 1.5rem;">
+                            ${getLineHeader(t.h_edu)}
+                            <div class="mt-3">${parseEducationNormal(val('inp-edu'))}</div>
+                        </div>` : ''}
+                        
+                        ${val('inp-exp') ? `<div style="margin-left: 34%; margin-bottom: 1.5rem;">
+                            ${getLineHeader(t.h_exp)}
+                            <div class="mt-3">${parseTimelineItems(val('inp-exp'))}</div>
+                        </div>` : ''}
+
+                        <!-- Everything below here will wrap to FULL LEFT on Page 2 if Sidebar height is exceeded -->
+                        
+                        ${val('inp-desc') ? `<div style="clear: both; padding-top: 1rem; margin-bottom: 1.5rem;">
+                            ${getGradientHeader('Industrial Training / Description')}
+                            <p class="text-sm text-black leading-relaxed mt-2 text-justify">${safeText(val('inp-desc'))}</p>
+                        </div>` : ''}
+
+                        <div style="clear: both;">${renderPersonalDetailsTable(val, t)}</div>
+
+                        <div style="clear: both; margin-bottom: 3rem;">
+                            ${getGradientHeader(t.h_decl)}
+                            <p class="text-sm text-black mt-2 font-normal">It is sincerely acknowledged by me that above all information about myself is true and correct.</p>
+                        </div>
+
+                        <div style="clear: both; margin-top: 4rem;">
+                            <p class="text-sm font-bold text-black mb-8 pl-4">${t.h_sig}</p>
+                            <div class="w-56 border-t-2 border-black pt-1">
+                                <p class="text-sm font-bold text-black pl-2">${val('inp-name')}</p>
+                            </div>
                         </div>
                     </div>
-
-                    <div class="mb-8">
-                        <h3 class="text-base font-bold uppercase tracking-wider mb-2 border-b border-white/30 pb-1">${t.h_contact}</h3>
-                        <div class="space-y-3 font-light text-sm opacity-90">
-                            ${val('inp-phone') ? `<p><i class="fa-solid fa-phone w-5 text-center mr-1"></i> ${val('inp-phone')}</p>` : ''}
-                            ${val('inp-email') ? `<p><i class="fa-solid fa-envelope w-5 text-center mr-1"></i> ${val('inp-email')}</p>` : ''}
-                            ${val('inp-loc') ? `<p><i class="fa-solid fa-location-dot w-5 text-center mr-1"></i> ${val('inp-loc')}</p>` : ''}
-                            ${val('inp-dob') ? `<p><i class="fa-solid fa-calendar w-5 text-center mr-1"></i> ${val('inp-dob')}</p>` : ''}
-                        </div>
-                    </div>
-
-                    ${val('inp-skills') ? `<div class="mb-8">
-                        <h3 class="text-base font-bold uppercase tracking-wider mb-2 border-b border-white/30 pb-1">${t.h_skills}</h3>
-                        <div class="text-sm font-light opacity-90">${parseList(val('inp-skills'))}</div>
-                    </div>` : ''}
-
-                    ${val('inp-lang') ? `<div class="mb-8">
-                        <h3 class="text-base font-bold uppercase tracking-wider mb-2 border-b border-white/30 pb-1">${t.languages}</h3>
-                        <div class="text-sm font-light opacity-90">${parseList(val('inp-lang'))}</div>
-                    </div>` : ''}
-
-                    ${val('inp-cert') ? `<div class="mb-8">
-                        <h3 class="text-base font-bold uppercase tracking-wider mb-2 border-b border-white/30 pb-1">${t.h_cert}</h3>
-                        <div class="font-light opacity-90">${parseCerts(val('inp-cert'))}</div>
-                    </div>` : ''}
-
-                    ${val('inp-int') ? `<div class="mb-8">
-                        <h3 class="text-base font-bold uppercase tracking-wider mb-2 border-b border-white/30 pb-1">${t.h_int}</h3>
-                        <p class="text-sm font-light opacity-90">${val('inp-int')}</p>
-                    </div>` : ''}
-                </div>
-
-                <div class="bg-gray-50 p-10 text-slate-800">
-                    <div class="mb-12">
-                        <h1 class="text-4xl font-extrabold uppercase tracking-wide text-slate-900 mb-2">${val('inp-name') || t.name}</h1>
-                        <h2 class="text-xl text-slate-500 font-medium tracking-wide uppercase">${val('inp-job') || t.jobTitle}</h2>
-                    </div>
-
-                    ${val('inp-obj') ? `<div class="mb-8">
-                        <div class="flex items-center gap-4 mb-3">
-                            <h3 class="text-lg font-bold uppercase tracking-widest text-slate-800 whitespace-nowrap">Objective</h3>
-                            <div class="w-full border-t-2 border-slate-300"></div>
-                        </div>
-                        <p class="text-sm text-slate-600 leading-relaxed text-justify">${safeText(val('inp-obj'))}</p>
-                    </div>` : ''}
-
-                    <!-- Now uses structured parser -->
-                    ${val('inp-edu') ? `<div class="mb-8">
-                        <div class="flex items-center gap-4 mb-4">
-                            <h3 class="text-lg font-bold uppercase tracking-widest text-slate-800 whitespace-nowrap">${t.h_edu}</h3>
-                            <div class="w-full border-t-2 border-slate-300"></div>
-                        </div>
-                        <div class="">${parseNormalItems(val('inp-edu'))}</div>
-                    </div>` : ''}
-
-                    <!-- Now uses structured parser -->
-                    ${val('inp-exp') ? `<div class="mb-8">
-                        <div class="flex items-center gap-4 mb-4">
-                            <h3 class="text-lg font-bold uppercase tracking-widest text-slate-800 whitespace-nowrap">${t.h_exp}</h3>
-                            <div class="w-full border-t-2 border-slate-300"></div>
-                        </div>
-                        <div class="">${parseNormalItems(val('inp-exp'))}</div>
-                    </div>` : ''}
                 </div>`;
+            }
+
+            if(window.innerWidth < 1024) {
+                 container.style.transform = 'scale(0.6)';
             }
         }
 
         function downloadPDF() {
-            const element = document.getElementById('cv-preview-container');
+            const originalElement = document.getElementById('cv-preview-container');
             const name = document.getElementById('inp-name')?.value || 'CV';
+            const btn = document.querySelector('button[onclick="downloadPDF()"]');
+            
+            const stage = document.createElement('div');
+            stage.id = 'pdf-stage';
+            stage.style.position = 'absolute'; 
+            stage.style.left = '0px'; 
+            stage.style.top = '0px';
+            stage.style.width = '210mm'; 
+            stage.style.margin = '0';
+            stage.style.padding = '0';
+            stage.style.backgroundColor = 'white'; 
+            stage.style.zIndex = '-9999'; 
+
+            const clone = originalElement.cloneNode(true);
+            clone.style.transform = 'none'; 
+            clone.style.margin = '0';
+            clone.style.boxShadow = 'none';
+            clone.style.width = '100%';
+            clone.style.height = 'auto'; 
+
+            stage.appendChild(clone);
+            document.body.appendChild(stage);
+
             const opt = { 
                 margin: 0, 
                 filename: `${name}_Resume.pdf`, 
-                image: { type: 'jpeg', quality: 1.0 }, 
-                html2canvas: { scale: 2, useCORS: true }, 
+                image: { type: 'jpeg', quality: 0.98 }, 
+                html2canvas: { 
+                    scale: 2, 
+                    useCORS: true,
+                    windowWidth: 794, 
+                    width: 794, 
+                    x: 0, 
+                    y: 0, 
+                    scrollX: 0, 
+                    scrollY: 0
+                }, 
                 jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' } 
             };
-            const btn = document.querySelector('button[onclick="downloadPDF()"]');
+
             const originalText = btn.innerHTML;
-            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Exporting...';
-            html2pdf().set(opt).from(element).save().then(() => { btn.innerHTML = originalText; });
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Processing...';
+
+            html2pdf().set(opt).from(clone).save().then(() => { 
+                document.body.removeChild(stage); 
+                btn.innerHTML = originalText; 
+            }).catch(err => {
+                console.error(err);
+                document.body.removeChild(stage);
+                btn.innerHTML = originalText;
+                alert('PDF generation failed. Please try on a Desktop.');
+            });
         }
     </script>
 </body>
-
 </html>
