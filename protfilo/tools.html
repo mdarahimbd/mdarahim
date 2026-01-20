@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> Auto CV Generator </title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&family=Inter:wght@300;400;600;800&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- HTML2PDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Roboto', 'Inter', 'sans-serif'],
+                        siliguri: ['Hind Siliguri', 'sans-serif'],
+                    },
+                    colors: {
+                        neonBlue: '#00f3ff',
+                        neonPurple: '#bc13fe',
+                        darkBg: '#2c3e50',
+                    },
+                    animation: {
+                        blob: "blob 7s infinite",
+                    },
+                    keyframes: {
+                        blob: {
+                            "0%": { transform: "translate(0px, 0px) scale(1)" },
+                            "33%": { transform: "translate(30px, -50px) scale(1.1)" },
+                            "66%": { transform: "translate(-20px, 20px) scale(0.9)" },
+                            "100%": { transform: "translate(0px, 0px) scale(1)" },
+                        },
+                    },
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background-color: #0f172a;
+            background-image: 
+                radial-gradient(at 0% 0%, hsla(253,16%,7%,1) 0, transparent 50%), 
+                radial-gradient(at 50% 0%, hsla(225,39%,30%,1) 0, transparent 50%), 
+                radial-gradient(at 100% 0%, hsla(339,49%,30%,1) 0, transparent 50%);
+            color: #e2e8f0;
+            overflow-x: hidden;
+        }
+
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .glow-btn {
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .glow-btn:hover {
+            box-shadow: 0 0 20px rgba(0, 243, 255, 0.4);
+            transform: translateY(-2px);
+        }
+
+        #cv-preview-container {
+            width: 210mm;
+            min-height: 297mm;
+            background: white;
+            margin: 0 auto;
+            box-shadow: 0 0 15px rgba(0,0,0,0.5);
+            transform-origin: top left;
+        }
+
+        .floating-input:focus ~ label,
+        .floating-input:not(:placeholder-shown) ~ label {
+            transform: translateY(-1.5rem) scale(0.85);
+            color: #00f3ff;
+        }
+
+        .format-helper {
+            font-size: 0.75rem;
+            color: #94a3b8;
+            margin-top: 0.5rem;
+            background: rgba(0,0,0,0.3);
+            padding: 0.5rem;
+            border-radius: 0.25rem;
+            font-family: monospace;
+            border-left: 2px solid #00f3ff;
+        }
+        .highlight { color: #00f3ff; font-weight: bold; }
+
+        @media (max-width: 1024px) {
+            #cv-preview-wrapper { overflow-x: scroll; }
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col font-sans">
+
+    <!-- LANDING VIEW -->
+    <section id="landing-view" class="flex-grow flex flex-col items-center justify-center p-6 relative z-10 h-screen">
+        <!-- Background Animation -->
+        <div class="absolute top-0 left-0 w-full h-full overflow-hidden -z-10 pointer-events-none">
+            <div class="absolute top-1/4 left-1/4 w-96 h-96 bg-neonPurple rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob"></div>
+            <div class="absolute top-1/3 right-1/4 w-96 h-96 bg-neonBlue rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob"></div>
+        </div>
+
+        <h1 class="text-5xl md:text-7xl font-bold text-center mb-4 text-transparent bg-clip-text bg-gradient-to-r from-neonBlue to-neonPurple">
+              CV Generator made by Abdur Rahim 
+        </h1>
+        <p class="text-gray-400 text-lg mb-12 text-center max-w-xl">
+            Select a mode below to create your  resume.
+        </p>
+        
+        <!-- BUTTONS CONTAINER -->
+        <div class="flex flex-col md:flex-row gap-6">
+            <!-- Professional Mode (Original) -->
+            <button onclick="showLanguageModal('professional')" class="glow-btn glass-panel px-10 py-6 rounded-2xl border border-neonBlue/30 text-neonBlue font-bold text-xl hover:bg-neonBlue/10">
+                <i class="fa-solid fa-wand-magic-sparkles mr-3"></i> Professional Mode
+            </button>
+            
+            <!-- Normal Mode (New) -->
+            <button onclick="showLanguageModal('normal')" class="glow-btn glass-panel px-10 py-6 rounded-2xl border border-white/20 text-white font-bold text-xl hover:bg-white/10">
+                <i class="fa-solid fa-rocket mr-3"></i> Normal Mode
+            </button>
+        </div>
+    </section>
+
+    <!-- LANGUAGE MODAL -->
+    <div id="lang-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm hidden">
+        <div class="glass-panel p-8 rounded-2xl max-w-md w-full text-center border border-white/10">
+            <h2 class="text-2xl font-bold mb-6 text-white">Select CV Language</h2>
+            <div class="grid grid-cols-2 gap-4">
+                <button onclick="selectLang('bn')" class="p-4 rounded-xl border border-white/20 hover:bg-white/10 text-white font-bold text-lg">বাংলা</button>
+                <button onclick="selectLang('en')" class="p-4 rounded-xl border border-white/20 hover:bg-white/10 text-white font-bold text-lg">English</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN APP -->
+    <div id="app-view" class="hidden min-h-screen flex flex-col lg:flex-row">
+        
+        <!-- LEFT: Form -->
+        <div class="w-full lg:w-5/12 p-6 overflow-y-auto h-screen border-r border-white/10 bg-slate-900/90">
+            <div class="flex justify-between items-center mb-6">
+                <button onclick="location.reload()" class="text-sm text-gray-400 hover:text-white"><i class="fa-solid fa-arrow-left"></i> Back</button>
+                <h2 class="text-xl font-bold text-neonBlue">Resume Details</h2>
+            </div>
+
+            <form id="cv-form" class="space-y-6">
+                <!-- Fields injected via JS -->
+            </form>
+
+            <div class="mt-8 pt-6 border-t border-white/10 pb-10">
+                <button type="button" onclick="generatePreview()" class="w-full py-4 bg-gradient-to-r from-neonBlue to-blue-600 rounded-xl font-bold text-black text-lg mb-4 hover:shadow-[0_0_20px_rgba(0,243,255,0.4)] transition">
+                    Update Live Preview
+                </button>
+                <button type="button" onclick="downloadPDF()" class="w-full py-4 glass-panel border border-neonPurple text-neonPurple rounded-xl font-bold text-lg hover:bg-neonPurple hover:text-white transition">
+                    <i class="fa-solid fa-file-pdf mr-2"></i> Download PDF (A4)
+                </button>
+            </div>
+        </div>
+
+        <!-- RIGHT: Preview -->
+        <div id="cv-preview-wrapper" class="w-full lg:w-7/12 bg-gray-800 p-8 flex justify-center overflow-y-auto h-screen">
+            <div id="cv-preview-container"></div>
+        </div>
+    </div>
+
+    <script>
+        const state = { 
+            lang: null, 
+            image: null, 
+            primaryColor: '#2c3e50', 
+            mode: 'professional' // Default
+        };
+
+        const i18n = {
+            en: {
+                name: "Full Name", email: "Email", phone: "Phone", address: "Address",
+                jobTitle: "Professional Job Title", objective: "Career Objective",
+                education: "Education Details", experience: "Work Experience", activities: "Activities / Projects",
+                skills: "Skills (comma separated)", languages: "Languages",
+                certificates: "Certifications (Format: Year : Description)",
+                interests: "Interests", dob: "Date of Birth",
+                imgLabel: "Upload Photo", colorLabel: "Sidebar Theme Color",
+                h_contact: "Contact", h_skills: "Skills", h_edu: "Education",
+                h_exp: "Experience", h_act: "Activities", h_cert: "Honors & Awards", h_int: "Interests",
+                eduHelper: "Format: <b>School</b> , <b>Degree</b> , <b>Date</b> , <b>GPA/Desc</b>",
+                expHelper: "Format: <b>Company</b> , <b>Role</b> , <b>Date</b> , <b>Description</b>",
+                actHelper: "Format: <b>Event</b> , <b>Role</b> , <b>Date</b> , <b>Description</b>"
+            },
+            bn: {
+                name: "পূর্ণ নাম", email: "ইমেইল", phone: "মোবাইল", address: "ঠিকানা",
+                jobTitle: "পেশা / পদবী", objective: "ক্যারিয়ার অবজেক্টিভ",
+                education: "শিক্ষা", experience: "কাজের অভিজ্ঞতা", activities: "কার্যক্রম",
+                skills: "দক্ষতা (কমা দিয়ে লিখুন)", languages: "ভাষাসমূহ",
+                certificates: "সার্টিফিকেট", interests: "আগ্রহ", dob: "জন্ম তারিখ",
+                imgLabel: "ছবি আপলোড করুন", colorLabel: "সাইডবারের রঙ",
+                h_contact: "যোগাযোগ", h_skills: "দক্ষতা", h_edu: "শিক্ষা",
+                h_exp: "অভিজ্ঞতা", h_act: "কার্যক্রম", h_cert: "সম্মাননা", h_int: "আগ্রহ",
+                eduHelper: "লিখুন: <b>প্রতিষ্ঠান</b> , <b>বিষয়</b> , <b>তারিখ</b> , <b>বিবরণ</b>",
+                expHelper: "লিখুন: <b>কোম্পানি</b> , <b>পদবী</b> , <b>তারিখ</b> , <b>বিবরণ</b>",
+                actHelper: "লিখুন: <b>ইভেন্ট</b> , <b>ভূমিকা</b> , <b>তারিখ</b> , <b>বিবরণ</b>"
+            }
+        };
+
+        function showLanguageModal(mode) {
+            state.mode = mode; 
+            document.getElementById('landing-view').classList.add('hidden');
+            document.getElementById('lang-modal').classList.remove('hidden');
+        }
+
+        function selectLang(lang) {
+            state.lang = lang;
+            document.getElementById('lang-modal').classList.add('hidden');
+            document.getElementById('app-view').classList.remove('hidden');
+            document.getElementById('app-view').classList.add('flex');
+            buildForm();
+            generatePreview(); 
+        }
+
+        function buildForm() {
+            const formContainer = document.getElementById('cv-form');
+            formContainer.innerHTML = '';
+            const t = i18n[state.lang];
+
+            const createInput = (id, label, type = 'text', isArea = false, helperText = null) => {
+                const wrapper = document.createElement('div');
+                wrapper.className = 'relative pt-4';
+                
+                let input = isArea ? document.createElement('textarea') : document.createElement('input');
+                if (isArea) input.rows = 4; else input.type = type;
+                
+                input.id = id;
+                input.className = 'floating-input block w-full appearance-none bg-transparent border-b-2 border-gray-600 px-0 py-2 text-white focus:outline-none focus:border-neonBlue transition-colors peer placeholder-transparent';
+                input.placeholder = label;
+                input.addEventListener('input', generatePreview);
+
+                const lbl = document.createElement('label');
+                lbl.innerText = label;
+                lbl.className = 'absolute left-0 top-4 text-gray-400 text-sm transition-all duration-300 transform -translate-y-0 scale-100 origin-[0] peer-focus:-translate-y-7 peer-focus:text-neonBlue peer-focus:scale-85 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-not-placeholder-shown:-translate-y-7 peer-not-placeholder-shown:scale-85 pointer-events-none';
+
+                wrapper.appendChild(input);
+                wrapper.appendChild(lbl);
+                
+                if(helperText) {
+                    const helpDiv = document.createElement('div');
+                    helpDiv.className = 'format-helper';
+                    helpDiv.innerHTML = `Use <span class="highlight">Comma (,)</span> to separate.<br>${helperText}`;
+                    wrapper.appendChild(helpDiv);
+                }
+                return wrapper;
+            };
+
+            // Essential Fields
+            formContainer.appendChild(createInput('inp-name', t.name));
+            formContainer.appendChild(createInput('inp-job', t.jobTitle));
+            
+            // Theme Customization
+            const colorWrapper = document.createElement('div');
+            colorWrapper.className = 'flex items-center gap-4 mt-4';
+            const colorInp = document.createElement('input');
+            colorInp.type = 'color';
+            colorInp.id = 'inp-color';
+            colorInp.value = state.primaryColor;
+            colorInp.className = 'h-10 w-10 bg-transparent border-none cursor-pointer';
+            colorInp.addEventListener('input', (e) => { state.primaryColor = e.target.value; generatePreview(); });
+            const colorLbl = document.createElement('span');
+            colorLbl.innerText = t.colorLabel;
+            colorLbl.className = 'text-gray-300';
+            colorWrapper.appendChild(colorInp);
+            colorWrapper.appendChild(colorLbl);
+            formContainer.appendChild(colorWrapper);
+
+            // Image Upload
+            const imgWrapper = document.createElement('div');
+            imgWrapper.className = 'mt-4 border border-dashed border-gray-500 rounded-lg p-4 text-center hover:border-neonBlue transition';
+            const imgInp = document.createElement('input');
+            imgInp.type = 'file';
+            imgInp.accept = 'image/*';
+            imgInp.className = 'hidden';
+            imgInp.id = 'inp-image';
+            const imgBtn = document.createElement('label');
+            imgBtn.htmlFor = 'inp-image';
+            imgBtn.innerHTML = `<i class="fa-solid fa-cloud-arrow-up text-2xl text-neonBlue mb-2"></i><br>${t.imgLabel}`;
+            imgBtn.className = 'cursor-pointer text-gray-300 block';
+            imgInp.addEventListener('change', handleImageUpload);
+            imgWrapper.appendChild(imgInp);
+            imgWrapper.appendChild(imgBtn);
+            formContainer.appendChild(imgWrapper);
+
+            // Section Fields
+            formContainer.appendChild(createInput('inp-obj', t.objective, 'text', true));
+            formContainer.appendChild(createInput('inp-edu', t.education, 'text', true, t.eduHelper));
+            formContainer.appendChild(createInput('inp-exp', t.experience, 'text', true, t.expHelper));
+            
+            // Activities section only for professional mode usually, but can be added to normal if needed. Keeping simple.
+            if(state.mode === 'professional') {
+                formContainer.appendChild(createInput('inp-act', t.activities, 'text', true, t.actHelper));
+            }
+
+            formContainer.appendChild(createInput('inp-phone', t.phone, 'tel'));
+            formContainer.appendChild(createInput('inp-email', t.email, 'email'));
+            formContainer.appendChild(createInput('inp-loc', t.address));
+            formContainer.appendChild(createInput('inp-dob', t.dob, 'date'));
+            formContainer.appendChild(createInput('inp-skills', t.skills, 'text', true));
+            formContainer.appendChild(createInput('inp-lang', t.languages));
+            formContainer.appendChild(createInput('inp-cert', t.certificates, 'text', true));
+            formContainer.appendChild(createInput('inp-int', t.interests, 'text', true));
+        }
+
+        function handleImageUpload(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(evt) { state.image = evt.target.result; generatePreview(); }
+                reader.readAsDataURL(file);
+            }
+        }
+
+        // --- Helpers ---
+        const parseList = (str) => {
+            if(!str) return '';
+            return `<ul class="list-none space-y-2 mt-2">${str.split(',').filter(i => i.trim() !== '').map(i => `<li class="flex items-start"><span class="mr-2">•</span> ${i.trim()}</li>`).join('')}</ul>`;
+        };
+
+        const parseCerts = (str) => {
+            if(!str) return '';
+            return str.split('\n').filter(l => l.trim() !== '').map(line => {
+                const parts = line.split(':');
+                if(parts.length > 1) return `<div class="mb-3"><span class="font-bold block">${parts[0].trim()}:</span> <span class="text-gray-200 text-sm opacity-90">${parts.slice(1).join(':').trim()}</span></div>`;
+                return `<div class="mb-3 text-sm">${line}</div>`;
+            }).join('');
+        };
+
+        const safeText = (text) => {
+            if(!text) return '';
+            return text.split('\n').map(line => `<div class="mb-1">${line}</div>`).join('');
+        };
+
+        // PARSER FOR PROFESSIONAL MODE (Timeline Style)
+        const parseRightColItems = (str) => {
+            if(!str) return '';
+            return str.split('\n').filter(l => l.trim() !== '').map(line => {
+                const parts = line.split(',');
+                const title = parts[0] ? parts[0].trim() : '';
+                const subtitle = parts[1] ? parts[1].trim() : '';
+                const date = parts[2] ? parts[2].trim() : '';
+                const desc = parts.slice(3).join(',').trim();
+
+                return `
+                <div class="mb-5 relative pl-5">
+                    <div class="absolute left-0 top-2 w-1.5 h-1.5 bg-slate-800 rounded-full"></div> 
+                    <div class="font-bold text-slate-800 text-base leading-tight">${title}</div> 
+                    <div class="flex justify-between items-start mt-0.5">
+                        <div class="text-gray-500 text-sm font-medium">${subtitle}</div> 
+                        <div class="text-slate-800 text-sm font-bold whitespace-nowrap ml-4">${date}</div> 
+                    </div>
+                    ${desc ? `<div class="text-sm text-slate-600 mt-1 font-normal">- ${desc}</div>` : ''}
+                </div>`;
+            }).join('');
+        };
+
+        // PARSER FOR NORMAL MODE (Clean Structured Style)
+        const parseNormalItems = (str) => {
+            if(!str) return '';
+            return str.split('\n').filter(l => l.trim() !== '').map(line => {
+                const parts = line.split(',');
+                
+                // Fallback if not using commas
+                if(parts.length < 2) return `<div class="mb-4 text-sm">${line}</div>`;
+
+                const col1 = parts[0] ? parts[0].trim() : ''; // Company / School
+                const col2 = parts[1] ? parts[1].trim() : ''; // Role / Degree
+                const col3 = parts[2] ? parts[2].trim() : ''; // Date
+                const col4 = parts.slice(3).join(',').trim(); // Description
+
+                return `
+                <div class="mb-6 relative">
+                    <div class="flex justify-between items-end mb-1">
+                        <h4 class="font-bold text-lg text-slate-800 leading-none">${col1}</h4>
+                        <span class="text-sm font-bold text-slate-500 bg-slate-100 px-2 py-0.5 rounded">${col3}</span>
+                    </div>
+                    <div class="text-sm font-semibold text-slate-600 italic mb-2">${col2}</div>
+                    ${col4 ? `<div class="text-sm text-slate-700 leading-relaxed border-l-2 border-slate-200 pl-3">${col4}</div>` : ''}
+                </div>`;
+            }).join('');
+        };
+
+        function generatePreview() {
+            const container = document.getElementById('cv-preview-container');
+            const t = i18n[state.lang];
+            const val = (id) => document.getElementById(id) ? document.getElementById(id).value : '';
+            const themeColor = state.primaryColor;
+
+            container.style.display = 'grid';
+            container.style.gridTemplateColumns = '32% 68%'; 
+            container.style.height = '100%'; 
+
+            if (state.mode === 'professional') {
+                // ================= PROFESSIONAL TEMPLATE =================
+                container.innerHTML = `
+                <!-- SIDEBAR -->
+                <div style="background-color: ${themeColor};" class="p-6 text-white flex flex-col h-full min-h-[297mm] text-sm leading-relaxed">
+                    <div class="flex justify-center mb-8 pt-4">
+                        <div class="w-36 h-36 rounded-full border-4 border-white/20 overflow-hidden bg-gray-300 flex items-center justify-center shadow-lg">
+                            ${state.image ? `<img src="${state.image}" class="w-full h-full object-cover">` : '<i class="fa-solid fa-user text-5xl text-gray-500"></i>'}
+                        </div>
+                    </div>
+                    <div class="mb-8">
+                        <h3 class="text-base font-bold uppercase tracking-wider mb-2 border-b border-white/30 pb-1">${t.h_contact}</h3>
+                        <div class="space-y-3 font-light text-sm opacity-90">
+                            ${val('inp-phone') ? `<p><i class="fa-solid fa-phone w-5 text-center mr-1"></i> ${val('inp-phone')}</p>` : ''}
+                            ${val('inp-email') ? `<p><i class="fa-solid fa-envelope w-5 text-center mr-1"></i> ${val('inp-email')}</p>` : ''}
+                            ${val('inp-loc') ? `<p><i class="fa-solid fa-location-dot w-5 text-center mr-1"></i> ${val('inp-loc')}</p>` : ''}
+                            ${val('inp-dob') ? `<p><i class="fa-solid fa-calendar w-5 text-center mr-1"></i> ${val('inp-dob')}</p>` : ''}
+                        </div>
+                    </div>
+                    ${val('inp-skills') ? `<div class="mb-8"><h3 class="text-base font-bold uppercase tracking-wider mb-2 border-b border-white/30 pb-1">${t.h_skills}</h3><div class="text-sm font-light opacity-90">${parseList(val('inp-skills'))}</div></div>` : ''}
+                    ${val('inp-lang') ? `<div class="mb-8"><h3 class="text-base font-bold uppercase tracking-wider mb-2 border-b border-white/30 pb-1">${t.languages}</h3><div class="text-sm font-light opacity-90">${parseList(val('inp-lang'))}</div></div>` : ''}
+                    ${val('inp-cert') ? `<div class="mb-8"><h3 class="text-base font-bold uppercase tracking-wider mb-2 border-b border-white/30 pb-1">${t.h_cert}</h3><div class="font-light opacity-90">${parseCerts(val('inp-cert'))}</div></div>` : ''}
+                    ${val('inp-int') ? `<div class="mb-8"><h3 class="text-base font-bold uppercase tracking-wider mb-2 border-b border-white/30 pb-1">${t.h_int}</h3><p class="text-sm font-light opacity-90">${val('inp-int')}</p></div>` : ''}
+                </div>
+
+                <!-- MAIN CONTENT -->
+                <div class="bg-gray-50 p-8 text-slate-800">
+                    <div class="mb-10">
+                        <h1 class="text-4xl font-bold uppercase tracking-widest mb-2" style="color: ${themeColor}">${val('inp-name') || t.name}</h1>
+                        <h2 class="text-xl text-slate-500 font-medium tracking-wide uppercase">${val('inp-job') || t.jobTitle}</h2>
+                    </div>
+                    ${val('inp-obj') ? `<div class="mb-8"><div class="flex items-center gap-3 mb-4"><span class="w-8 h-8 rounded-full flex items-center justify-center text-white text-sm" style="background-color: ${themeColor}"><i class="fa-solid fa-bullseye"></i></span><h3 class="text-xl font-bold uppercase text-slate-700">Profile</h3></div><p class="text-sm text-slate-600 leading-relaxed text-justify border-l-2 border-gray-200 pl-4">${val('inp-obj')}</p></div>` : ''}
+                    
+                    ${val('inp-edu') ? `<div class="mb-8"><div class="flex items-center gap-3 mb-6"><span class="w-8 h-8 rounded-full flex items-center justify-center text-white text-sm" style="background-color: ${themeColor}"><i class="fa-solid fa-graduation-cap"></i></span><h3 class="text-xl font-bold uppercase text-slate-700">${t.h_edu}</h3></div><div class="pl-2">${parseRightColItems(val('inp-edu'))}</div></div>` : ''}
+                    ${val('inp-exp') ? `<div class="mb-8"><div class="flex items-center gap-3 mb-6"><span class="w-8 h-8 rounded-full flex items-center justify-center text-white text-sm" style="background-color: ${themeColor}"><i class="fa-solid fa-briefcase"></i></span><h3 class="text-xl font-bold uppercase text-slate-700">${t.h_exp}</h3></div><div class="pl-2">${parseRightColItems(val('inp-exp'))}</div></div>` : ''}
+                    ${val('inp-act') ? `<div class="mb-8"><div class="flex items-center gap-3 mb-6"><span class="w-8 h-8 rounded-full flex items-center justify-center text-white text-sm" style="background-color: ${themeColor}"><i class="fa-solid fa-users"></i></span><h3 class="text-xl font-bold uppercase text-slate-700">${t.h_act}</h3></div><div class="pl-2">${parseRightColItems(val('inp-act'))}</div></div>` : ''}
+                </div>`;
+            } else {
+                // ================= NORMAL (FUTURISTIC/CLEAN) TEMPLATE =================
+                container.innerHTML = `
+                <div style="background-color: ${themeColor};" class="p-8 text-white flex flex-col h-full min-h-[297mm] text-sm leading-relaxed">
+                    <div class="flex justify-center mb-8">
+                        <div class="w-36 h-36 rounded-full border-4 border-white/20 overflow-hidden bg-gray-300 flex items-center justify-center shadow-lg">
+                            ${state.image ? `<img src="${state.image}" class="w-full h-full object-cover">` : '<i class="fa-solid fa-user text-5xl text-gray-500"></i>'}
+                        </div>
+                    </div>
+
+                    <div class="mb-8">
+                        <h3 class="text-base font-bold uppercase tracking-wider mb-2 border-b border-white/30 pb-1">${t.h_contact}</h3>
+                        <div class="space-y-3 font-light text-sm opacity-90">
+                            ${val('inp-phone') ? `<p><i class="fa-solid fa-phone w-5 text-center mr-1"></i> ${val('inp-phone')}</p>` : ''}
+                            ${val('inp-email') ? `<p><i class="fa-solid fa-envelope w-5 text-center mr-1"></i> ${val('inp-email')}</p>` : ''}
+                            ${val('inp-loc') ? `<p><i class="fa-solid fa-location-dot w-5 text-center mr-1"></i> ${val('inp-loc')}</p>` : ''}
+                            ${val('inp-dob') ? `<p><i class="fa-solid fa-calendar w-5 text-center mr-1"></i> ${val('inp-dob')}</p>` : ''}
+                        </div>
+                    </div>
+
+                    ${val('inp-skills') ? `<div class="mb-8">
+                        <h3 class="text-base font-bold uppercase tracking-wider mb-2 border-b border-white/30 pb-1">${t.h_skills}</h3>
+                        <div class="text-sm font-light opacity-90">${parseList(val('inp-skills'))}</div>
+                    </div>` : ''}
+
+                    ${val('inp-lang') ? `<div class="mb-8">
+                        <h3 class="text-base font-bold uppercase tracking-wider mb-2 border-b border-white/30 pb-1">${t.languages}</h3>
+                        <div class="text-sm font-light opacity-90">${parseList(val('inp-lang'))}</div>
+                    </div>` : ''}
+
+                    ${val('inp-cert') ? `<div class="mb-8">
+                        <h3 class="text-base font-bold uppercase tracking-wider mb-2 border-b border-white/30 pb-1">${t.h_cert}</h3>
+                        <div class="font-light opacity-90">${parseCerts(val('inp-cert'))}</div>
+                    </div>` : ''}
+
+                    ${val('inp-int') ? `<div class="mb-8">
+                        <h3 class="text-base font-bold uppercase tracking-wider mb-2 border-b border-white/30 pb-1">${t.h_int}</h3>
+                        <p class="text-sm font-light opacity-90">${val('inp-int')}</p>
+                    </div>` : ''}
+                </div>
+
+                <div class="bg-gray-50 p-10 text-slate-800">
+                    <div class="mb-12">
+                        <h1 class="text-4xl font-extrabold uppercase tracking-wide text-slate-900 mb-2">${val('inp-name') || t.name}</h1>
+                        <h2 class="text-xl text-slate-500 font-medium tracking-wide uppercase">${val('inp-job') || t.jobTitle}</h2>
+                    </div>
+
+                    ${val('inp-obj') ? `<div class="mb-8">
+                        <div class="flex items-center gap-4 mb-3">
+                            <h3 class="text-lg font-bold uppercase tracking-widest text-slate-800 whitespace-nowrap">Objective</h3>
+                            <div class="w-full border-t-2 border-slate-300"></div>
+                        </div>
+                        <p class="text-sm text-slate-600 leading-relaxed text-justify">${safeText(val('inp-obj'))}</p>
+                    </div>` : ''}
+
+                    <!-- Now uses structured parser -->
+                    ${val('inp-edu') ? `<div class="mb-8">
+                        <div class="flex items-center gap-4 mb-4">
+                            <h3 class="text-lg font-bold uppercase tracking-widest text-slate-800 whitespace-nowrap">${t.h_edu}</h3>
+                            <div class="w-full border-t-2 border-slate-300"></div>
+                        </div>
+                        <div class="">${parseNormalItems(val('inp-edu'))}</div>
+                    </div>` : ''}
+
+                    <!-- Now uses structured parser -->
+                    ${val('inp-exp') ? `<div class="mb-8">
+                        <div class="flex items-center gap-4 mb-4">
+                            <h3 class="text-lg font-bold uppercase tracking-widest text-slate-800 whitespace-nowrap">${t.h_exp}</h3>
+                            <div class="w-full border-t-2 border-slate-300"></div>
+                        </div>
+                        <div class="">${parseNormalItems(val('inp-exp'))}</div>
+                    </div>` : ''}
+                </div>`;
+            }
+        }
+
+        function downloadPDF() {
+            const element = document.getElementById('cv-preview-container');
+            const name = document.getElementById('inp-name')?.value || 'CV';
+            const opt = { 
+                margin: 0, 
+                filename: `${name}_Resume.pdf`, 
+                image: { type: 'jpeg', quality: 1.0 }, 
+                html2canvas: { scale: 2, useCORS: true }, 
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' } 
+            };
+            const btn = document.querySelector('button[onclick="downloadPDF()"]');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Exporting...';
+            html2pdf().set(opt).from(element).save().then(() => { btn.innerHTML = originalText; });
+        }
+    </script>
+</body>
+</html>
