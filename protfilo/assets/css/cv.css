@@ -60,3 +60,43 @@ body {
 }
 
 input, textarea { font-size: 16px !important; }
+/* ... existing styles ... */
+
+/* New Animation Styles */
+
+/* 1. Glowing Pulse for Image */
+.glow-cv-box {
+    box-shadow: 0 0 15px rgba(0, 243, 255, 0.3);
+    animation: glow-pulse 3s infinite alternate;
+}
+
+@keyframes glow-pulse {
+    0% {
+        box-shadow: 0 0 15px rgba(0, 243, 255, 0.3);
+        transform: scale(1);
+    }
+    100% {
+        box-shadow: 0 0 30px rgba(188, 19, 254, 0.6);
+        transform: scale(1.02);
+    }
+}
+
+/* 2. Typing Cursor Blink */
+.animate-blink {
+    animation: blink 1s step-end infinite;
+}
+
+@keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+}
+
+/* Optional: Blur behind image for extra glow */
+.animate-tilt {
+    animation: tilt 10s infinite linear;
+}
+@keyframes tilt {
+    0%, 50%, 100% { transform: rotate(0deg); }
+    25% { transform: rotate(1deg); }
+    75% { transform: rotate(-1deg); }
+}
