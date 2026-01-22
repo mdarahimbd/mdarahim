@@ -1,8 +1,27 @@
-$(document).ready(function () {
 
     // --- EASY UPLOAD PROJECTS START ---
     // Just change the strings here to add your files.
     // Ensure images are in assets/images/projects/
+   $(document).ready(function () {
+
+    // --- WELCOME POPUP WITH TYPING ---
+    setTimeout(function() {
+        // 1. Show the popup
+        $('#welcome-popup').addClass('show-popup');
+
+        // 2. Start Typing Animation inside the popup
+        new Typed(".popup-text", {
+            strings: ["Hey there👋 thanks for visiting my portfolio! "],
+            typeSpeed: 40,
+            showCursor: false // No blinking cursor after typing
+        });
+
+    }, 500); 
+
+    setTimeout(function() {
+        // 3. Hide after 5 seconds
+        $('#welcome-popup').removeClass('show-popup');
+    }, 5500); 
     const myProjects = [
         { img: "project1.jpg", title: "RAHIM LOGO", desc: "project 1" },
         { img: "project2.png", title: "Design work", desc: "project 2" },
