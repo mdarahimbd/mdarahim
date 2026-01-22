@@ -1,0 +1,62 @@
+body {
+    background-color: #0f172a;
+    background-image: 
+        radial-gradient(at 0% 0%, hsla(253,16%,7%,1) 0, transparent 50%), 
+        radial-gradient(at 50% 0%, hsla(225,39%,30%,1) 0, transparent 50%), 
+        radial-gradient(at 100% 0%, hsla(339,49%,30%,1) 0, transparent 50%);
+    color: #e2e8f0;
+    overflow-x: hidden;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.glass-panel {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+}
+
+.glow-btn {
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.glow-btn:hover {
+    box-shadow: 0 0 20px rgba(0, 243, 255, 0.4);
+    transform: translateY(-2px);
+}
+
+#cv-preview-container {
+    width: 210mm; 
+    min-height: 297mm; 
+    background: white;
+    margin: 0 auto;
+    box-shadow: 0 0 15px rgba(0,0,0,0.5);
+    display: block; 
+}
+
+.floating-input:focus ~ label,
+.floating-input:not(:placeholder-shown) ~ label {
+    transform: translateY(-1.5rem) scale(0.85);
+    color: #00f3ff;
+}
+
+.format-helper {
+    font-size: 0.75rem;
+    color: #94a3b8;
+    margin-top: 0.5rem;
+    background: rgba(0,0,0,0.3);
+    padding: 0.5rem;
+    border-radius: 0.25rem;
+    font-family: monospace;
+    border-left: 2px solid #00f3ff;
+}
+
+/* Force styling for PDF generation consistency */
+.force-black {
+    color: #000000 !important;
+    opacity: 1 !important;
+}
+
+input, textarea { font-size: 16px !important; }
