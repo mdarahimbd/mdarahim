@@ -1147,3 +1147,38 @@ header .navbar ul li a:hover {
 .memory-btn:hover .btn-icon {
     transform: rotate(20deg) scale(1.2);
 }
+
+/* --- WELCOME POPUP STYLES (With Glow) --- */
+#welcome-popup {
+    position: fixed;
+    top: -150px; /* Hidden initially */
+    left: 50%;
+    transform: translateX(-50%);
+    /* Glassmorphism Dark Background */
+    background: rgba(0, 0, 0, 0.85); 
+    backdrop-filter: blur(10px);
+    color: #00ffea; /* Neon Cyan Text */
+    padding: 15px 35px;
+    font-size: 1.6rem;
+    font-weight: 600;
+    border-radius: 50px;
+    z-index: 10001;
+    transition: top 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+    border: 2px solid #00b4db;
+    text-align: center;
+    min-width: 320px;
+    white-space: nowrap; /* Keeps text on one line */
+    /* GLOW ANIMATION */
+    box-shadow: 0 0 10px #00b4db;
+    animation: popupGlow 1.5s infinite alternate;
+}
+
+#welcome-popup.show-popup {
+    top: 30px;
+}
+
+/* The Glowing Pulse Animation */
+@keyframes popupGlow {
+    0% { box-shadow: 0 0 10px #00b4db, 0 0 20px #00b4db; border-color: #00b4db; }
+    100% { box-shadow: 0 0 20px #00ffea, 0 0 40px #00ffea; border-color: #00ffea; }
+}
