@@ -14,7 +14,27 @@ tailwind.config = {
         }
     }
 }
+/* ... all your previous JS code ... */
 
+// --- NEW: Typing Animation Logic ---
+document.addEventListener('DOMContentLoaded', () => {
+    const textToType = "Here is a demo cv of mine...";
+    const typingElement = document.getElementById('typing-text');
+    let charIndex = 0;
+
+    function typeWriter() {
+        if (charIndex < textToType.length) {
+            typingElement.innerHTML += textToType.charAt(charIndex);
+            charIndex++;
+            setTimeout(typeWriter, 50); // Speed of typing (lower is faster)
+        }
+    }
+    
+    // Start typing if the element exists (on landing page)
+    if(typingElement) {
+        setTimeout(typeWriter, 500); // Wait 0.5s before starting
+    }
+});
 /* --- App Logic --- */
 const state = { 
     lang: null, 
