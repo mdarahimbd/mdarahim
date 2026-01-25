@@ -1,9 +1,22 @@
-
-    // --- EASY UPLOAD PROJECTS START ---
-    // Just change the strings here to add your files.
-    // Ensure images are in assets/images/projects/
    $(document).ready(function () {
 
+    // --- AUTOMATIC AGE CALCULATOR (For 27 May 2007) ---
+    const birthYear = 2007;
+    const birthMonth = 5;  // May
+    const birthDay = 27;
+
+    const today = new Date();
+    const dob = new Date(birthYear, birthMonth - 1, birthDay); // Month is 0-indexed in JS
+    let age = today.getFullYear() - dob.getFullYear();
+    const m = today.getMonth() - dob.getMonth();
+
+    // If today is before May 27, subtract 1 year
+    if (m < 0 || (m === 0 && today.getDate() < dob.getDate())) {
+        age--;
+    }
+
+    $("#dynamic-age").text(age);
+    // --------------------------------------------------
     // --- WELCOME POPUP WITH TYPING ---
     setTimeout(function() {
         // 1. Show the popup
@@ -22,6 +35,7 @@
         // 3. Hide after 5 seconds
         $('#welcome-popup').removeClass('show-popup');
     }, 5500); 
+        // --- EASY UPLOAD PROJECTS START ---
     const myProjects = [
         { img: "project1.jpg", title: "RAHIM LOGO", desc: "project 1" },
         { img: "project2.png", title: "Design work", desc: "project 2" },
@@ -137,15 +151,20 @@
 
     // <!-- typed js effect starts -->
     var typed = new Typed(".typing-text", {
-        strings: ["logo designer", "video editor", "web designer", "Photo editor", "HTML programmer", " CSS Programmer","JAVA Script Programmer","C Programmer"],
+        strings: ["logo designer", "video editor", "Photo editor",],
         loop: true,
         typeSpeed: 60,
         backSpeed: 30,
         backDelay: 500,
     });
+     var typed = new Typed(".typing-text-2", {
+        strings: ["Assalamualaikum, I'm MD. Abdur Rahim ",],
+        typeSpeed: 60,
+        loop: true,
+    });
     // <!-- typed js effect ends -->
 
-    // <!-- tilt js effect starts -->
+    // <!-- title js effect starts -->
     VanillaTilt.init(document.querySelectorAll(".tilt"), {
         max: 15,
     });
