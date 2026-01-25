@@ -540,6 +540,10 @@ header .navbar ul li a:hover {
   font-family: "Nunito";
   font-weight: 300;
 }
+#dynamic-age {
+   color: var(--text-white) !important;
+   font-weight: 600;
+}
 .about .row .content .box-container .box p {
   text-transform: none;
   color: var(--text-white);
