@@ -158,8 +158,10 @@
         backDelay: 500,
     });
      var typed = new Typed(".typing-text-2", {
-        strings: ["Assalamualaikum, I'm MD. Abdur Rahim ",],
+        strings: ["Assalamualaikum", "I'm MD. Abdur Rahim ",],
         typeSpeed: 60,
+        backSpeed: 30,
+        backDelay: 500,
         loop: true,
     });
     // <!-- typed js effect ends -->
