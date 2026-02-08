@@ -1,4 +1,4 @@
-// CONFIGURATION: 14 Images
+// CONFIGURATION: 20 Images
 const slides = [
     { title: "MATTERHORN", desc: "The jewel of the Swiss Alps.", image: "assets/swiss/swiss1.jpg" },
     { title: "LUCERNE", desc: "Medieval architecture.", image: "assets/swiss/swiss2.jpg" },
@@ -14,6 +14,13 @@ const slides = [
     { title: "JUNGFRAUJOCH", desc: "Top of Europe.", image: "assets/swiss/china2.jpg" },
     { title: "BASEL", desc: "Cultural hub.", image: "assets/swiss/china3.jpg" },
     { title: "DAVOS", desc: "Mountain resort.", image: "assets/swiss/china4.jpg" },
+    { title: "SION", desc: "Historic town.", image: "assets/swiss/china5.jpg" },
+    { title: "APPENZELL", desc: "Colorful traditions.", image: "assets/swiss/china6.jpg" },
+    { title: "SCHAFFHAUSEN", desc: "Rheinfall's town.", image: "assets/swiss/china7.jpg" },
+    { title: "GENEVA", desc: "International city.", image: "assets/swiss/china8.jpg" },
+    { title: "ZURICH", desc: "Financial center.", image: "assets/swiss/china9.jpg" },   
+    { title: "MONTREUX", desc: "Jazz festival city.", image: "assets/swiss/china10.jpg" },
+
 ];
 
 // Elements
