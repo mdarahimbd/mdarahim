@@ -1,4 +1,4 @@
-   $(document).ready(function () {
+   $(document).ready(function ()  {
 
     // --- AUTOMATIC AGE CALCULATOR (For 27 May 2007) ---
     const birthYear = 2007;
