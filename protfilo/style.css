@@ -1186,3 +1186,7 @@ header .navbar ul li a:hover {
     0% { box-shadow: 0 0 10px #00b4db, 0 0 20px #00b4db; border-color: #00b4db; }
     100% { box-shadow: 0 0 20px #00ffea, 0 0 40px #00ffea; border-color: #00ffea; }
 }
+/* Update your CSS to include .skills */
+.home, .about, .education, .skills {
+    overflow-x: hidden;
+}
