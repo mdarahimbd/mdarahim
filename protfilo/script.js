@@ -180,32 +180,49 @@
         reset: true
     });
 
-    /* SCROLL ANIMATIONS */
-    srtop.reveal('.home .content h3', { delay: 200 });
-    srtop.reveal('.home .content p', { delay: 200 });
-    srtop.reveal('.home .content .btn', { delay: 200 });
+    // HOME: Image (Left -> Right), Text (Right -> Left)
+    srtop.reveal('.home .image', { origin: 'left', distance: '150px', delay: 800 });
+    srtop.reveal('.home .content', { origin: 'right', distance: '150px', delay: 600 });
 
-    srtop.reveal('.home .image', { delay: 400 });
-    srtop.reveal('.about .content h3', { delay: 200 });
-    srtop.reveal('.projects .box', { interval: 200 }); /* Animates project boxes */
+    // ABOUT: Image (Right -> Left), Text (Left -> Right)
+    srtop.reveal('.about .image', { origin: 'right', distance: '150px', delay: 500 });
+    srtop.reveal('.about .content', { origin: 'left', distance: '150px', delay: 300 });
+     // --- SKILLS SECTION ANIMATIONS ---
 
+    // The first 3 skills (HTML, JS, Java) move from LEFT to RIGHT
+    srtop.reveal('.skills .bar:nth-child(1), .skills .bar:nth-child(2), .skills .bar:nth-child(3)', {
+        origin: 'left',
+        distance: '150px',
+        duration: 1000,
+        delay: 200,
+        interval: 150 // This creates a "waterfall" effect
+    });
+
+    // The last 3 skills (Firebase, C, CSS) move from RIGHT to LEFT
+    srtop.reveal('.skills .bar:nth-child(4), .skills .bar:nth-child(5), .skills .bar:nth-child(6)', {
+        origin: 'right',
+        distance: '150px',
+        duration: 1000,
+        delay: 200,
+        interval: 150 
+    });
+    
+    // EDUCATION: Image (Left -> Right), Content (Right -> Left)
+    srtop.reveal('.education .box .image', { origin: 'left', distance: '150px', delay: 500 });
+    srtop.reveal('.education .box .content', { origin: 'right', distance: '150px', delay: 300 });
+
+    // PROJECTS & SKILLS: Simple fade-in interval
+    srtop.reveal('.projects .box', { interval: 300 });
+    srtop.reveal('.skills .container', { interval: 500 });
+    // --- OTHER ANIMATIONS ---
+
+    srtop.reveal('.projects .box', { interval: 500 });
+    srtop.reveal('.skills .container', { interval: 500 });
+    srtop.reveal('.education .box', { interval: 300 });
 });
-
-// disable developer mode
-document.onkeydown = function (e) {
-    if (e.keyCode == 123) {
-        return false;
-    }
-    if (e.ctrlKey && e.shiftKey && e.keyCode == 'I'.charCodeAt(0)) {
-        return false;
-    }
-    if (e.ctrlKey && e.shiftKey && e.keyCode == 'C'.charCodeAt(0)) {
-        return false;
-    }
-    if (e.ctrlKey && e.shiftKey && e.keyCode == 'J'.charCodeAt(0)) {
-        return false;
-    }
-    if (e.ctrlKey && e.keyCode == 'U'.charCodeAt(0)) {
-        return false;
-    }
-}
+// --- EDUCATION SECTION ANIMATIONS ---
+    // Education Images move from Left to Right
+    srtop.reveal('.education .box .image', { origin: 'left', distance: '150px', delay: 500 });
+    
+    // Education Content (Text) moves from Right to Left
+    srtop.reveal('.education .box .content', { origin: 'right', distance: '150px', delay: 300 });
