@@ -1,4 +1,4 @@
-   $(document).ready(function ()  {
+   $(document).ready(function () {
 
     // --- AUTOMATIC AGE CALCULATOR (For 27 May 2007) ---
     const birthYear = 2007;
@@ -47,7 +47,10 @@
         { img: "project8.jpg", title: "AR Logo Design", desc: "project 8" },
         { img: "project9.jpg", title: "R Logo Design", desc: "project 9" },
         { img: "project10.jpg", title: "AR Logo Design", desc: "project 10" },
-        { img: "project11.jpg", title: "Rahim Logo", desc: "project 11" }
+        { img: "project11.jpg", title: "Rahim Logo", desc: "project 11" },
+        { img: "project12.jpeg", title: "AR Logo Design", desc: "project 12" },
+        { img: "project13.jpeg", title: "AR Logo Design", desc: "project 13" },
+        { img: "project14.jpeg", title: "AR Logo Design", desc: "project 14" },
         
     ];
 
@@ -212,13 +215,13 @@
     srtop.reveal('.education .box .content', { origin: 'right', distance: '150px', delay: 300 });
 
     // PROJECTS & SKILLS: Simple fade-in interval
-    srtop.reveal('.projects .box', { interval: 300 });
+    srtop.reveal('.projects .box', { interval: 200 });
     srtop.reveal('.skills .container', { interval: 500 });
     // --- OTHER ANIMATIONS ---
 
-    srtop.reveal('.projects .box', { interval: 500 });
+    srtop.reveal('.projects .box', { interval: 200 });
     srtop.reveal('.skills .container', { interval: 500 });
-    srtop.reveal('.education .box', { interval: 300 });
+    srtop.reveal('.education .box', { interval: 400 });
 });
 // --- EDUCATION SECTION ANIMATIONS ---
     // Education Images move from Left to Right
