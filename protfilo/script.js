@@ -215,11 +215,11 @@
     srtop.reveal('.education .box .content', { origin: 'right', distance: '150px', delay: 300 });
 
     // PROJECTS & SKILLS: Simple fade-in interval
-    srtop.reveal('.projects .box', { interval: 200 });
+    srtop.reveal('.projects .box', { interval: 100 });
     srtop.reveal('.skills .container', { interval: 500 });
     // --- OTHER ANIMATIONS ---
 
-    srtop.reveal('.projects .box', { interval: 200 });
+    srtop.reveal('.projects .box', { interval: 100 });
     srtop.reveal('.skills .container', { interval: 500 });
     srtop.reveal('.education .box', { interval: 400 });
 });
