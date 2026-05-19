@@ -16,7 +16,23 @@
     }
 
     $("#dynamic-age").text(age);
-    // --------------------------------------------------
+  // AUTOMATIC FLIP CARD ANIMATION
+  // Get all flip-card-inner elements
+  const flipCardInners = document.querySelectorAll('.flip-card-inner');
+  
+  // Setup automatic flipping for each card
+  flipCardInners.forEach((card) => {
+    let isFlipped = false;
+    setInterval(() => {
+      if (isFlipped) {
+        card.style.transform = 'rotateY(0deg)';
+        isFlipped = false;
+      } else {
+        card.style.transform = 'rotateY(180deg)';
+        isFlipped = true;
+      }
+    }, 5000); // Flip every 5 seconds
+  });
     // --- WELCOME POPUP WITH TYPING ---
     setTimeout(function() {
         // 1. Show the popup
@@ -229,3 +245,4 @@
     
     // Education Content (Text) moves from Right to Left
     srtop.reveal('.education .box .content', { origin: 'right', distance: '150px', delay: 300 });
+
