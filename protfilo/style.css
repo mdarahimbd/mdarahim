@@ -657,8 +657,14 @@ header .navbar ul li a:hover {
 .skills h2 {
   color: #fff;
 }
+body.light-mode .skills h2 {
+  color: var(--heading-color);
+}
 .skills .heading span {
   color: rgb(212, 192, 6);
+}
+body.light-mode .skills .heading span {
+  color: var(--span-color);
 }
 .skills .container {
   background: rgba(0, 0, 22, 0.4);
@@ -747,7 +753,7 @@ header .navbar ul li a:hover {
   font-weight: 500;
   font-family: "Poppins";
   transition: 0.3s;
-  color: var(--text-white);
+  color: #fff;
 }
 
 /* Percentage Text Styling (Hidden by default) */
