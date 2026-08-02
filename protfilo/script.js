@@ -170,14 +170,14 @@
 
     // <!-- typed js effect starts -->
     var typed = new Typed(".typing-text", {
-        strings: ["logo designing", "video editing", "Photo editing", "Python programming",],
+        strings: ["logo designing", "video editing", "Photo editing", " programming",],
         loop: true,
         typeSpeed: 60,
         backSpeed: 30,
         backDelay: 500,
     });
      var typed = new Typed(".typing-text-2", {
-        strings: ["Assalamualaikum", "I'm MD. Abdur Rahim ",],
+        strings: ["Assalamualaikum", "I'm MD Abdur Rahim ",],
         typeSpeed: 60,
         backSpeed: 30,
         backDelay: 500,
@@ -245,4 +245,3 @@
     
     // Education Content (Text) moves from Right to Left
     srtop.reveal('.education .box .content', { origin: 'right', distance: '150px', delay: 300 });
-
