@@ -1,4 +1,4 @@
-   $(document).ready(function () {
+$(document).ready(function () {
 
     // --- AUTOMATIC AGE CALCULATOR (For 27 May 2007) ---
     const birthYear = 2007;
@@ -170,20 +170,80 @@
 
     // <!-- typed js effect starts -->
     var typed = new Typed(".typing-text", {
-        strings: ["logo designing", "video editing", "Photo editing", " programming",],
+        strings: ["logo designing", "video editing", "Photo editing", "Python programming",],
         loop: true,
         typeSpeed: 60,
         backSpeed: 30,
         backDelay: 500,
     });
      var typed = new Typed(".typing-text-2", {
-        strings: ["Assalamualaikum", "I'm MD Abdur Rahim ",],
+        strings: ["Assalamualaikum", "I'm MD. Abdur Rahim ",],
         typeSpeed: 60,
         backSpeed: 30,
         backDelay: 500,
         loop: true,
     });
     // <!-- typed js effect ends -->
+
+    // --- EDUCATION SECTION TYPING ANIMATION (SHOW ONCE, NO BACKSPACE) ---
+    function startEducationTyping() {
+        new Typed(".edu-title-1", {
+            strings: ["Govt. Ashek Mahmud College (National University)"],
+            typeSpeed: 40,
+            loop: false,
+            showCursor: false
+        });
+        new Typed(".edu-desc-1", {
+            strings: ["I am currently pursuing my higher education on Mathematics at Govt. Ashek Mahmud College. It is one of the most renowned colleges in the Jamalpur district. I am focused on my academic journey here, gaining the knowledge and skills necessary to build a strong foundation for my future career."],
+            typeSpeed: 25,
+            loop: false,
+            showCursor: false
+        });
+
+        new Typed(".edu-title-2", {
+            strings: ["Jamalpur Ideal School & College"],
+            typeSpeed: 40,
+            loop: false,
+            showCursor: false
+        });
+        new Typed(".edu-desc-2", {
+            strings: ["My College life is full of learning and growth. I have gained a lot of knowledge and skills that will help me in my future endeavors."],
+            typeSpeed: 25,
+            loop: false,
+            showCursor: false
+        });
+
+        new Typed(".edu-title-3", {
+            strings: ["Beltia High School"],
+            typeSpeed: 40,
+            loop: false,
+            showCursor: false
+        });
+        new Typed(".edu-desc-3", {
+            strings: ["My high school years were a time of self-discovery and exploration. I made lifelong friends and had many memorable experiences."],
+            typeSpeed: 25,
+            loop: false,
+            showCursor: false
+        });
+    }
+
+    if ('IntersectionObserver' in window) {
+        const eduObserver = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    startEducationTyping();
+                    observer.disconnect();
+                }
+            });
+        }, { threshold: 0.1 });
+
+        const eduSection = document.querySelector('#education');
+        if (eduSection) {
+            eduObserver.observe(eduSection);
+        }
+    } else {
+        startEducationTyping();
+    }
 
     // <!-- title js effect starts -->
     VanillaTilt.init(document.querySelectorAll(".tilt"), {
