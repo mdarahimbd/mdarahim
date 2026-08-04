@@ -16,6 +16,12 @@
   --section-about-bg: rgb(19, 158, 147);
   --section-skills-bg: linear-gradient(to bottom, #57059e, #cc0c82);
   --section-education-bg: #0bb674;
+  --edu-box-bg: #0a3328;
+  --edu-box-shadow: 0.2rem 0.5rem 1rem rgba(0, 0, 0, 0.3);
+  --edu-h3-color: #ffe600;
+  --edu-name-color: #00ffc8;
+  --edu-h4-color: #76ff03;
+  --edu-desc-color: #ffffff;
 }
 
 body.dark-mode {
@@ -32,6 +38,12 @@ body.dark-mode {
   --section-about-bg: #050505;
   --section-skills-bg: linear-gradient(to bottom, #0f0c29, #302b63, #24243e);
   --section-education-bg: #000000;
+  --edu-box-bg: #12121d;
+  --edu-box-shadow: 0 0 15px rgba(0, 255, 234, 0.2);
+  --edu-h3-color: #ffe600;
+  --edu-name-color: #00ffea;
+  --edu-h4-color: #39ff14;
+  --edu-desc-color: #e0e0e0;
 }
 
 body.light-mode {
@@ -48,6 +60,12 @@ body.light-mode {
   --section-about-bg: #e0e0e0;
   --section-skills-bg: linear-gradient(to bottom, #ddd, #bbb);
   --section-education-bg: #f9f9f9;
+  --edu-box-bg: #ffffff;
+  --edu-box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  --edu-h3-color: #0369a1;
+  --edu-name-color: #0f172a;
+  --edu-h4-color: #15803d;
+  --edu-desc-color: #334155;
 }
 
 /* === ANIMATIONS === */
@@ -782,6 +800,7 @@ body.light-mode .skills .heading span {
   opacity: 1;
   transform: translate(-50%, -50%) scale(1);
 }
+
 /* education section */
 .education {
   background: var(--section-education-bg);
@@ -807,13 +826,13 @@ body.light-mode .skills .heading span {
   flex-direction: row;
   width: 80%;
   border-radius: 0.5rem;
-  box-shadow: 0.2rem 0.5rem 1rem rgba(223, 6, 6, 0.2);
+  box-shadow: var(--edu-box-shadow);
   text-align: center;
   position: relative;
   margin-top: 2rem;
   overflow: hidden;
   transition: 0.3s;
-  background: rgb(129, 55, 129);
+  background: var(--edu-box-bg);
 }
 .education .box-container .box:hover {
   transform: scale(1.03);
@@ -840,21 +859,28 @@ body.light-mode .skills .heading span {
 }
 .education .box-container .box .content h3 {
   font-size: 2.5rem;
-  color: #cee40d;
+  color: var(--edu-h3-color);
   padding: 0.5rem 0;
   font-weight: 600;
   text-align: center;
   margin-left: 1rem;
 }
-.education .box-container .box .content p {
+.education .box-container .box .content p:nth-of-type(1) {
+  font-size: 1.6rem;
+  margin-left: 1rem;
+  text-align: center;
+  color: var(--edu-name-color);
+  font-weight: 600;
+}
+.education .box-container .box .content p:nth-of-type(2) {
   font-size: 1.5rem;
   margin-left: 1rem;
   text-align: center;
-  color: #00ffc8;
+  color: var(--edu-desc-color);
 }
 .education h4 {
   font-size: 2rem;
-  color: rgb(66, 216, 6);
+  color: var(--edu-h4-color);
   text-align: bottom;
   margin: 1rem;
   font-family: "Nunito", sans-serif;
