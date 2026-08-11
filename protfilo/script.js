@@ -88,9 +88,47 @@ $(document).ready(function () {
     // --- EASY UPLOAD PROJECTS END ---
 
 
+    // --- THEME SWITCH TRANSITION OVERLAY FUNCTION ---
+    let isThemeSwitching = false;
+
+    function switchThemeWithOverlay(mode, applyThemeCallback) {
+        if (isThemeSwitching) return;
+        isThemeSwitching = true;
+
+        const overlay = $('#theme-switch-overlay');
+        const overlayText = $('#theme-switch-text');
+
+        // Reset classes
+        overlay.removeClass('dark-overlay light-overlay default-overlay');
+
+        if (mode === 'dark') {
+            overlay.addClass('dark-overlay');
+            overlayText.text('Switching Dark Mode');
+        } else if (mode === 'light') {
+            overlay.addClass('light-overlay');
+            overlayText.text('Switching Light Mode');
+        } else {
+            overlay.addClass('default-overlay');
+            overlayText.text('Switching Default Mode');
+        }
+
+        // Show overlay
+        overlay.addClass('active');
+
+        // Apply theme halfway through transition (800ms)
+        setTimeout(() => {
+            applyThemeCallback();
+        }, 800);
+
+        // Hide overlay after 2.5 seconds total
+        setTimeout(() => {
+            overlay.removeClass('active');
+            isThemeSwitching = false;
+        }, 2500);
+    }
+
+
     // --- THEME SWITCHER LOGIC (3 Modes) ---
-    // Click on toggle slider switches Default <-> Dark
-    // Click on text switches to Light
     const toggle = document.getElementById('theme-toggle');
     const modeText = document.querySelector('.mode-text');
     const body = document.body;
@@ -108,25 +146,33 @@ $(document).ready(function () {
     // Toggle Slider (Default vs Dark)
     toggle.addEventListener('change', () => {
         if(toggle.checked) {
-            body.classList.remove('default-mode', 'light-mode');
-            body.classList.add('dark-mode');
-            modeText.innerText = "Dark Mode";
-            localStorage.setItem('theme', 'dark');
+            switchThemeWithOverlay('dark', () => {
+                body.classList.remove('default-mode', 'light-mode');
+                body.classList.add('dark-mode');
+                modeText.innerText = "Dark Mode";
+                localStorage.setItem('theme', 'dark');
+            });
         } else {
-            body.classList.remove('dark-mode', 'light-mode');
-            body.classList.add('default-mode');
-            modeText.innerText = "Default";
-            localStorage.setItem('theme', 'default');
+            switchThemeWithOverlay('default', () => {
+                body.classList.remove('dark-mode', 'light-mode');
+                body.classList.add('default-mode');
+                modeText.innerText = "Default";
+                localStorage.setItem('theme', 'default');
+            });
         }
     });
 
     // Click Text to cycle Light Mode
     modeText.addEventListener('click', () => {
-        body.classList.remove('default-mode', 'dark-mode');
-        body.classList.add('light-mode');
-        modeText.innerText = "Light Mode";
-        toggle.checked = false; 
-        localStorage.setItem('theme', 'light');
+        if (!body.classList.contains('light-mode')) {
+            switchThemeWithOverlay('light', () => {
+                body.classList.remove('default-mode', 'dark-mode');
+                body.classList.add('light-mode');
+                modeText.innerText = "Light Mode";
+                toggle.checked = false; 
+                localStorage.setItem('theme', 'light');
+            });
+        }
     });
     // --- END THEME LOGIC ---
 
@@ -201,7 +247,7 @@ $(document).ready(function () {
         });
 
         new Typed(".edu-title-2", {
-            strings: ["Jamalpur Ideal School & College"],
+            strings: ["Jamalpur Ideal School and College"],
             typeSpeed: 40,
             loop: false,
             showCursor: false
@@ -277,8 +323,8 @@ $(document).ready(function () {
         interval: 150 // This creates a "waterfall" effect
     });
 
-    // The last 3 skills (Firebase, C, CSS) move from RIGHT to LEFT
-    srtop.reveal('.skills .bar:nth-child(4), .skills .bar:nth-child(5), .skills .bar:nth-child(6)', {
+    // The remaining skills move from RIGHT to LEFT
+    srtop.reveal('.skills .bar:nth-child(4), .skills .bar:nth-child(5), .skills .bar:nth-child(6), .skills .bar:nth-child(7)', {
         origin: 'right',
         distance: '150px',
         duration: 1000,
