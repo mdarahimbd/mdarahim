@@ -68,6 +68,69 @@ body.light-mode {
   --edu-desc-color: #334155;
 }
 
+/* === THEME SWITCHING OVERLAY === */
+#theme-switch-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 99999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.4s ease;
+}
+
+#theme-switch-overlay.active {
+    opacity: 1;
+    pointer-events: all;
+}
+
+#theme-switch-text {
+    font-size: 3rem;
+    font-weight: 700;
+    font-family: 'Poppins', sans-serif;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    text-align: center;
+    padding: 0 20px;
+    animation: float 2s infinite ease-in-out;
+}
+
+@media (max-width: 450px) {
+    #theme-switch-text {
+        font-size: 2.2rem;
+    }
+}
+
+/* Overlay themes */
+#theme-switch-overlay.dark-overlay {
+    background-color: #000000;
+}
+#theme-switch-overlay.dark-overlay #theme-switch-text {
+    color: #ffffff;
+    text-shadow: 0 0 15px #00ffea;
+}
+
+#theme-switch-overlay.light-overlay {
+    background-color: #ffffff;
+}
+#theme-switch-overlay.light-overlay #theme-switch-text {
+    color: #000000;
+    text-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+#theme-switch-overlay.default-overlay {
+    background-color: #0896b9;
+}
+#theme-switch-overlay.default-overlay #theme-switch-text {
+    color: #ffffff;
+    text-shadow: 0 0 15px #5eff00;
+}
+
 /* === ANIMATIONS === */
 @keyframes neonGlow {
   0% { 
